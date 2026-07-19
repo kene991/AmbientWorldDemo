@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: ac2a481e0b48432439ee32e120250c78
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 203329
+  packageName: City People Mega-Pack
+  packageVersion: 1.4.0
+  assetPath: Assets/DenysAlmaral/CityPeople/Animations/wheelchair_teen.controller
+  uploadId: 835690

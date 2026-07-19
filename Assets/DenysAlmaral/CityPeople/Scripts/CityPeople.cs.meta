@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 54f141628068b9b4493f69f797f003b2
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 203329
+  packageName: City People Mega-Pack
+  packageVersion: 1.4.0
+  assetPath: Assets/DenysAlmaral/CityPeople/Scripts/CityPeople.cs
+  uploadId: 835690
