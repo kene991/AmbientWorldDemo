@@ -10,10 +10,7 @@ public class NPC_IdlingState : NPCBaseState
 
     public override void EnterState(NPCStateMachine state)
     {
-        state.Routine.UpdateNodePath();
 
-        if (state.Routine.currentPathNode != null)
-            state.MoveToPosition(state.Routine.currentPathNode.transform.position);
     }
 
     public override void IntializeState(NPCBaseState state)

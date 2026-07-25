@@ -22,7 +22,6 @@ public class NPCStateMachine : MonoBehaviour
     public NPCRoutine Routine { get { return routine; } }
 
     [Header("Tweakable Variables")]
-    public float MinSpeed;
     public float MaxSpeed;
 
     // Start is called before the first frame update

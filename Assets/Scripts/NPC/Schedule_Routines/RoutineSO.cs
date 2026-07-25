@@ -3,12 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum FreeTimeMode
-{
-    WANDER,
-    BACK_TO_DEFAULT,
-    STAY_AT_BLOCK
-}
 
 [CreateAssetMenu(fileName = "New Routine", menuName = "NPC/Create A New Routine")]
 public class RoutineSO : ScriptableObject
@@ -19,8 +13,7 @@ public class RoutineSO : ScriptableObject
     {
         foreach (RoutineBlock block in blocks)
         {
-            if (currentTime >= block.startHour &&
-                currentTime < block.endHour)
+            if (IsTimeWithinBlock(currentTime, block))
             {
                 return block;
             }
@@ -30,7 +23,7 @@ public class RoutineSO : ScriptableObject
     }
 
     // checking is block takes place during the day or overnight
-    public bool IsTimeWithinBlock(float currentTime, RoutineBlock block)
+    private bool IsTimeWithinBlock(float currentTime, RoutineBlock block)
     {
         if (block.startHour < block.endHour)
         {
@@ -59,11 +52,11 @@ public class RoutineBlock
 
     //[Header("Destination Settings")]
     //public Transform destination;
-    //public bool findRandomPointAtDestination;
+    //public bool FindRandomPointAtDestination;
 
     //[Header("Reached Destination Settings")]
     //public bool activeAtDestinationReached;
-    //public bool shouldRotateFaceDestination;
+    //public bool OrientToDestinationPosition;
     //public AnimationClip clipAtDestination;
 
     //[Header("Debug")]

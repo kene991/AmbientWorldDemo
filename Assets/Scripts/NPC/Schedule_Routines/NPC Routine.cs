@@ -2,39 +2,93 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+public enum FreeTimeActivity
+{
+    Idle,
+    Wander,
+    ReturnHome,
+    //Socialize,
+    //InteractIGA,
+    //Sit
+}
+
 public class NPCRoutine : MonoBehaviour
 {
-    private NavMeshAgent agent;
+    private NPCStateMachine _agentMachine;
+    private int _intervalTime;
 
-    //place routine scheduler here
+    [Header("Home Settings")]
+    public Transform defualtHome;
+
     [Header("Schedule Settings")]
-    private int lastHour;
+    public FreeTimeActivity activityOnFreeTime;
     public RoutineBlock currentRoutine;
     public RoutineSO routineSchedule;
-    [SerializeField] bool onFreeTime; //if the the npc has free time
+    [SerializeField] bool isInFreeTime; //if the the npc has free time
 
     [Header("Pathing Settings")]
     public PathNode currentPathNode;
 
     private void Awake()
     {
-        agent = GetComponent<NavMeshAgent>();
+        _agentMachine = GetComponent<NPCStateMachine>();
+    }
+
+    private void Update()
+    {
+        UpdateRoutine();
+
+        if (isInFreeTime && !_agentMachine.Agent.pathPending && (!_agentMachine.Agent.hasPath ||_agentMachine.Agent.pathStatus != NavMeshPathStatus.PathComplete))
+        {
+            switch (activityOnFreeTime)
+            {
+                case FreeTimeActivity.Idle:
+                    _agentMachine.StopNPC();
+                    //play random idle animation
+                break;
+                    
+                case FreeTimeActivity.Wander:
+
+                    if (_agentMachine.Agent.isStopped)
+                        _agentMachine.ResumeNPC();
+
+                    UpdateNodePath();
+
+                break;
+
+                case FreeTimeActivity.ReturnHome:
+
+                    if (_agentMachine.Agent.isStopped)
+                        _agentMachine.ResumeNPC();
+
+                    _agentMachine.MoveToPosition(defualtHome.position);
+
+                    break;
+
+                default:
+                break;
+            }
+
+        }
     }
 
     private void UpdateRoutine()
     {
+        if (!GameClockManager.Instance) return;
+
         int currentHour = GameClockManager.Instance.GetTimeSpanned;
 
-        if (currentHour != lastHour)
+        if (currentHour != _intervalTime)
         {
-            lastHour = currentHour;
+            _intervalTime = currentHour;
             currentRoutine = routineSchedule.GetBlock(currentHour);
-            routineSchedule.IsTimeWithinBlock(currentHour, currentRoutine);
+
+            isInFreeTime = currentRoutine == null;
         }
 
     }
 
-    #region Default Pathing
+    #region Default Wander Pathing
     public PathNode GetClosestNode()
     {
         PathNode[] pathNodes = FindObjectsByType<PathNode>(FindObjectsSortMode.None);
@@ -69,6 +123,8 @@ public class NPCRoutine : MonoBehaviour
 
     public void UpdateNodePath()
     {
+        if (!isInFreeTime) return;
+
         if (currentPathNode == null)
         {
             currentPathNode = GetClosestNode();
@@ -76,6 +132,7 @@ public class NPCRoutine : MonoBehaviour
         }
 
         currentPathNode = SetNextNode();
+        _agentMachine.MoveToPosition(currentPathNode.transform.position);
     }
 
     private PathNode ChooseNextNode(PathNode node)
