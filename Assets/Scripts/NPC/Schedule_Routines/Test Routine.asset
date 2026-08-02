@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: Test Routine
   m_EditorClassIdentifier: Assembly-CSharp::RoutineSO
   blocks:
-  - blockName: Test 1
+  - blockName: Do Overtime At Work
     startHour: 21
     endHour: 2
-  - blockName: Test 2
-    startHour: 7
-    endHour: 19
+    destinationID: 4534
+  - blockName: 'Go To Work '
+    startHour: 5
+    endHour: 13
+    destinationID: 4534

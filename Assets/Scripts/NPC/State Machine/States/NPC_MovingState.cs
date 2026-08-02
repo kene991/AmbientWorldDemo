@@ -31,7 +31,7 @@ public class NPC_MovingState : NPCBaseState
 
     public override void OnTriggerEnter(NPCStateMachine state, Collider collide)
     {
-        
+       
     }
 
     public override void UpdateState(NPCStateMachine state)
@@ -41,10 +41,17 @@ public class NPC_MovingState : NPCBaseState
             _npc.Animator.SetFloat("Velocity", Mathf.Clamp01(_npc.Agent.speed/_npc.MaxSpeed));
         }
 
-        if (Mathf.Abs(_npc.Agent.velocity.sqrMagnitude) < 0.1 && _npc.Agent.remainingDistance < 0.1f)
+        if (!state.HasReachedDestination())
+            return;
+
+        if (!state.Routine.IsInTaskLocation && state.Routine.currentTaskLocation != null)
         {
-            _npc.OnStateSwitch(_npc.idleState);
+            state.Routine.currentTaskLocation.OnNPCEnter(state);
         }
+
+        _npc.OnStateSwitch(_npc.idleState);
     }
+
+
 
 }

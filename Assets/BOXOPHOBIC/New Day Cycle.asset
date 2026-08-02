@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 09ed3ead3b20c924683fb505c36a7cd3, type: 3}
+  m_Script: {fileID: 11500000, guid: 06c84b647ebcee84cae8d0de5491cf29, type: 3}
   m_Name: New Day Cycle
   m_EditorClassIdentifier: 
   skyLighting:

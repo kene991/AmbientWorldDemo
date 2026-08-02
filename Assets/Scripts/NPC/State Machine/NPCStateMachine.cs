@@ -21,21 +21,29 @@ public class NPCStateMachine : MonoBehaviour
     private NPCRoutine routine;
     public NPCRoutine Routine { get { return routine; } }
 
-    [Header("Tweakable Variables")]
-    public float MaxSpeed;
+    [Header("NPC Object Ref")]
+    [SerializeField] private GameObject npcModel;
+    public GameObject NPCModel { get { return npcModel; } set { npcModel = value; } }
+    //public AnimationClip[] idleAnimations;
 
-    // Start is called before the first frame update
-    private void Start()
+    [Header("Traversal Settings Variables")]
+    public float MaxSpeed;
+    public PathNode currentPathNode;
+
+    private void Awake()
     {
+        npcModel = transform.GetChild(0).gameObject;
         _npcAnimator = GetComponent<Animator>();
         _agent = GetComponent<NavMeshAgent>();
         routine = GetComponent<NPCRoutine>();
+    }
 
+    private void Start()
+    {
         IntializeStates();
         currentState.EnterState(this);
     }
 
-    // Update is called once per frame
     private void Update()
     {
         currentState.UpdateState(this);
@@ -85,5 +93,94 @@ public class NPCStateMachine : MonoBehaviour
         Agent.SetDestination(transform);
     }
 
-}
+    public bool HasReachedDestination()
+    {
+        if (_agent.pathPending)
+            return false;
 
+        if (_agent.remainingDistance > Agent.stoppingDistance)
+            return false;
+
+        if (_agent.hasPath && Agent.velocity.sqrMagnitude > 0.01f)
+            return false;
+
+        return true;
+    }
+
+    #region Free Roam Nodes
+    public PathNode GetClosestNode()
+    {
+        PathNode[] pathNodes = FindObjectsByType<PathNode>(FindObjectsSortMode.None);
+
+        PathNode closestNode = null;
+        float closestDistance = Mathf.Infinity;
+
+        foreach (PathNode node in pathNodes)
+        {
+            float distance = Vector3.SqrMagnitude(transform.position - node.transform.position);
+
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                closestNode = node;
+            }
+        }
+
+        return closestNode;
+    }
+
+    public PathNode SetNextNode()
+    {
+        if (currentPathNode == null)
+            return null;
+
+        print("next");
+
+        currentPathNode = ChooseNextNode(currentPathNode);
+        return currentPathNode;
+    }
+
+    public void UpdateNodePath()
+    {
+        if (currentPathNode == null)
+        {
+            currentPathNode = GetClosestNode();
+            MoveToPosition(currentPathNode.transform.position);
+            return;
+        }
+
+        currentPathNode = SetNextNode();
+        MoveToPosition(currentPathNode.transform.position);
+    }
+
+    private PathNode ChooseNextNode(PathNode node)
+    {
+        if (node.waypointBranches.Count > 0 && Random.value <= node.branchRatio)
+        {
+            return node.waypointBranches[Random.Range(0, node.waypointBranches.Count)];
+        }
+
+        print("next again");
+        return node.nextWaypoint;
+    }
+    #endregion
+
+    #region Animations
+
+    public void ReplaceAnimationClip(AnimationClip animationClip, string overrideClip)
+    {
+        AnimatorOverrideController animatorOverride = new(_npcAnimator.runtimeAnimatorController);
+        _npcAnimator.runtimeAnimatorController = animatorOverride;
+
+        animatorOverride[overrideClip] = animationClip;
+    }
+    public void RandomizeReplaceAnimationClips(AnimationClip[] animationClips, string overrideClip)
+    {
+        AnimatorOverrideController animatorOverride = new(_npcAnimator.runtimeAnimatorController);
+        _npcAnimator.runtimeAnimatorController = animatorOverride;
+
+        animatorOverride[overrideClip] = animationClips[Random.Range(0, animationClips.Length)];
+    }
+    #endregion
+
+}

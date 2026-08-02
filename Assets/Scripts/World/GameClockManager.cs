@@ -30,7 +30,7 @@ public class GameClockManager : MonoBehaviour
     TimeSpan timeSpan;
     int h;
 
-    private void Start()
+    private void Awake()
     {
         Instance = this;
     }

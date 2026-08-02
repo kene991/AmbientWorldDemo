@@ -4,8 +4,7 @@ using UnityEngine.AI;
 
 public enum FreeTimeActivity
 {
-    Idle,
-    Wander,
+    Free_Roam,
     ReturnHome,
     //Socialize,
     //InteractIGA,
@@ -14,136 +13,108 @@ public enum FreeTimeActivity
 
 public class NPCRoutine : MonoBehaviour
 {
+    [SerializeField] private LocationManager locationManager;
     private NPCStateMachine _agentMachine;
     private int _intervalTime;
 
-    [Header("Home Settings")]
-    public Transform defualtHome;
+    [Header("Destination Location")]
+    public bool IsInTaskLocation;
+    public Location currentTaskLocation;
 
-    [Header("Schedule Settings")]
-    public FreeTimeActivity activityOnFreeTime;
-    public RoutineBlock currentRoutine;
-    public RoutineSO routineSchedule;
+    [Header("Activity Settings")]
     [SerializeField] bool isInFreeTime; //if the the npc has free time
+    public bool IsInFreeTime { get { return isInFreeTime; } set { isInFreeTime = value; } }
+    public FreeTimeActivity activityOnFreeTime;
 
-    [Header("Pathing Settings")]
-    public PathNode currentPathNode;
+    [Header("Routine Settings")]
+    public RoutineSO routineSchedule;
+    public RoutineBlock currentRoutineBlock;
 
     private void Awake()
     {
         _agentMachine = GetComponent<NPCStateMachine>();
     }
 
+    private void Start()
+    {
+        UpdateRoutine(true);
+    }
+
     private void Update()
     {
         UpdateRoutine();
-
-        if (isInFreeTime && !_agentMachine.Agent.pathPending && (!_agentMachine.Agent.hasPath ||_agentMachine.Agent.pathStatus != NavMeshPathStatus.PathComplete))
-        {
-            switch (activityOnFreeTime)
-            {
-                case FreeTimeActivity.Idle:
-                    _agentMachine.StopNPC();
-                    //play random idle animation
-                break;
-                    
-                case FreeTimeActivity.Wander:
-
-                    if (_agentMachine.Agent.isStopped)
-                        _agentMachine.ResumeNPC();
-
-                    UpdateNodePath();
-
-                break;
-
-                case FreeTimeActivity.ReturnHome:
-
-                    if (_agentMachine.Agent.isStopped)
-                        _agentMachine.ResumeNPC();
-
-                    _agentMachine.MoveToPosition(defualtHome.position);
-
-                    break;
-
-                default:
-                break;
-            }
-
-        }
     }
 
-    private void UpdateRoutine()
+    private void UpdateRoutine(bool forceUpdate = false)
     {
-        if (!GameClockManager.Instance) return;
+        if (!GameClockManager.Instance)
+            return;
 
         int currentHour = GameClockManager.Instance.GetTimeSpanned;
 
-        if (currentHour != _intervalTime)
-        {
-            _intervalTime = currentHour;
-            currentRoutine = routineSchedule.GetBlock(currentHour);
+        // Only skip if we're NOT forcing an update
+        // AND the hour hasn't changed.
+        if (!forceUpdate && currentHour == _intervalTime)
+            return;
 
-            isInFreeTime = currentRoutine == null;
-        }
+        _intervalTime = currentHour;
 
+        RoutineBlock newBlock = routineSchedule.GetBlock(currentHour);
+
+        // Nothing changed
+        if (newBlock?.blockName == currentRoutineBlock?.blockName)
+            return;
+
+        currentRoutineBlock = newBlock;
+        isInFreeTime = currentRoutineBlock == null;
+
+        OnRoutineChanged();
     }
 
-    #region Default Wander Pathing
-    public PathNode GetClosestNode()
+    private void OnRoutineChanged()
     {
-        PathNode[] pathNodes = FindObjectsByType<PathNode>(FindObjectsSortMode.None);
-
-        PathNode closestNode = null;
-        float closestDistance = Mathf.Infinity;
-
-        foreach (PathNode node in pathNodes)
+        // based on a free-time activity do either of these
+        if (isInFreeTime)
         {
-            float distance = Vector3.SqrMagnitude(transform.position - node.transform.position);
-
-            if (distance < closestDistance)
+            //exit current location if npc has one
+            if (currentTaskLocation)
             {
-                closestDistance = distance;
-                closestNode = node;
+                currentTaskLocation.OnNPCExit(_agentMachine);
+                currentTaskLocation = null;
+                IsInTaskLocation = false;
             }
-        }
 
-        return closestNode;
-    }
+            //set agent back to active on
+            _agentMachine.NPCModel.SetActive(true);
 
-    public PathNode SetNextNode()
-    {
-        if (currentPathNode == null)
-            return null;
+            if (activityOnFreeTime == FreeTimeActivity.Free_Roam)
+                _agentMachine.UpdateNodePath();
+            
+            if (activityOnFreeTime == FreeTimeActivity.ReturnHome)
+                GoToTaskLocation(locationManager.GetLocation(3546));
 
-        print("next");
-
-        currentPathNode = ChooseNextNode(currentPathNode);
-        return currentPathNode;
-    }
-
-    public void UpdateNodePath()
-    {
-        if (!isInFreeTime) return;
-
-        if (currentPathNode == null)
-        {
-            currentPathNode = GetClosestNode();
             return;
         }
 
-        currentPathNode = SetNextNode();
-        _agentMachine.MoveToPosition(currentPathNode.transform.position);
+        _agentMachine.currentPathNode = null;
+        //go to the location set on their current routine block
+        GoToTaskLocation(locationManager.GetLocation(currentRoutineBlock.destinationID));
     }
 
-    private PathNode ChooseNextNode(PathNode node)
+    public void GoToTaskLocation(Location location)
     {
-        if (node.waypointBranches.Count > 0 && Random.value <= node.branchRatio)
+        IsInTaskLocation = false;
+
+        if (currentTaskLocation != null)
         {
-            return node.waypointBranches[Random.Range(0, node.waypointBranches.Count)];
+            currentTaskLocation.OnNPCExit(_agentMachine);
+            currentTaskLocation = null;
         }
 
-        print("next again");
-        return node.nextWaypoint;
+        currentTaskLocation = location;
+        _agentMachine.Agent.ResetPath();
+        _agentMachine.MoveToPosition(currentTaskLocation.entryPoint.position);
     }
-    #endregion
+
+   
 }

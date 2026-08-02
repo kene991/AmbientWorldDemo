@@ -41,7 +41,6 @@ public class RoutineSO : ScriptableObject
 [System.Serializable]
 public class RoutineBlock
 {
-    [Header("Setup")]
     public string blockName;
 
     [Range(0, 23)]
@@ -50,9 +49,8 @@ public class RoutineBlock
     [Range(0, 23)]
     public int endHour;
 
-    //[Header("Destination Settings")]
-    //public Transform destination;
-    //public bool FindRandomPointAtDestination;
+    [Header("Destination Settings")]
+    public int destinationID;
 
     //[Header("Reached Destination Settings")]
     //public bool activeAtDestinationReached;
