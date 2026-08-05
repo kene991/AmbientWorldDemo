@@ -324,8 +324,10 @@ GameObject:
   - component: {fileID: 1975739624897359735}
   - component: {fileID: 7025908822914678962}
   - component: {fileID: 4346181677611183583}
+  - component: {fileID: 108072368210055043}
   - component: {fileID: 499183976794831889}
   - component: {fileID: 2876819381732851531}
+  - component: {fileID: 4536327387243136471}
   m_Layer: 0
   m_Name: Test NPC
   m_TagString: Untagged
@@ -387,6 +389,21 @@ MonoBehaviour:
     startHour: 0
     endHour: 0
     destinationID: 0
+--- !u!114 &108072368210055043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 490084261460884511}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38e451e4b4c75154a82cb6055e962465, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NPCInteraction
+  interactableTags:
+  - sports car
+  currentInteractionObject: {fileID: 0}
 --- !u!195 &499183976794831889
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -400,8 +417,8 @@ NavMeshAgent:
   m_Speed: 3.35
   m_Acceleration: 60
   avoidancePriority: 50
-  m_AngularSpeed: 120
-  m_StoppingDistance: 0
+  m_AngularSpeed: 720
+  m_StoppingDistance: 0.1
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 0
   m_AutoRepath: 1
@@ -431,6 +448,29 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!136 &4536327387243136471
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 490084261460884511}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.2
+  m_Height: 1.7
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &774002847490716934
 GameObject:
   m_ObjectHideFlags: 0

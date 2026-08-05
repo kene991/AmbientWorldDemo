@@ -76,7 +76,7 @@ public class NPCRoutine : MonoBehaviour
         // based on a free-time activity do either of these
         if (isInFreeTime)
         {
-            //exit current location if npc has one
+            //exit routine task location if npc has one
             if (currentTaskLocation)
             {
                 currentTaskLocation.OnNPCExit(_agentMachine);
