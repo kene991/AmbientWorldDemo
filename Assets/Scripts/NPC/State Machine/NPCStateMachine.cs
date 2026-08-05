@@ -20,11 +20,12 @@ public class NPCStateMachine : MonoBehaviour
 
     private NPCRoutine routine;
     public NPCRoutine Routine { get { return routine; } }
+    private NPCInteraction interaction;
+    public NPCInteraction Interaction { get { return interaction; } }
 
     [Header("NPC Object Ref")]
     [SerializeField] private GameObject npcModel;
     public GameObject NPCModel { get { return npcModel; } set { npcModel = value; } }
-    //public AnimationClip[] idleAnimations;
 
     [Header("Traversal Settings Variables")]
     public float MaxSpeed;
@@ -35,7 +36,9 @@ public class NPCStateMachine : MonoBehaviour
         npcModel = transform.GetChild(0).gameObject;
         _npcAnimator = GetComponent<Animator>();
         _agent = GetComponent<NavMeshAgent>();
+
         routine = GetComponent<NPCRoutine>();
+        interaction = GetComponent<NPCInteraction>();
     }
 
     private void Start()
@@ -107,6 +110,14 @@ public class NPCStateMachine : MonoBehaviour
         return true;
     }
 
+    public void OrientToPosition(Transform rot)
+    {
+        Transform newRot = rot;
+        Quaternion targetRot = newRot.rotation;
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 10f);
+        transform.rotation = rot.rotation;
+    }
+
     #region Free Roam Nodes
     public PathNode GetClosestNode()
     {
@@ -129,16 +140,6 @@ public class NPCStateMachine : MonoBehaviour
         return closestNode;
     }
 
-    public PathNode SetNextNode()
-    {
-        if (currentPathNode == null)
-            return null;
-
-        print("next");
-
-        currentPathNode = ChooseNextNode(currentPathNode);
-        return currentPathNode;
-    }
 
     public void UpdateNodePath()
     {
@@ -149,7 +150,7 @@ public class NPCStateMachine : MonoBehaviour
             return;
         }
 
-        currentPathNode = SetNextNode();
+        currentPathNode = ChooseNextNode(currentPathNode);
         MoveToPosition(currentPathNode.transform.position);
     }
 

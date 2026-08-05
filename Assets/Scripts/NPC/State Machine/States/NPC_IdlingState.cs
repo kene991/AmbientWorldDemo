@@ -11,28 +11,51 @@ public class NPC_IdlingState : NPCBaseState
 
     public override void EnterState(NPCStateMachine state)
     {
-        if (state.Routine.IsInFreeTime && state.Routine.activityOnFreeTime == FreeTimeActivity.Free_Roam)
-            state.UpdateNodePath();
-
-
-        // if the task location is an area (park, beach, playground, etc.)
-        if (!state.NPCModel.activeSelf)
-            return;
-
-        if (state.Routine.currentTaskLocation != null && state.Routine.currentTaskLocation.isArea)
+        // if I have free time?
+        if (state.Routine.IsInFreeTime)
         {
-            if (!state.Routine.IsInTaskLocation)
+            // I stopped to interact with something
+            if (state.Interaction.currentInteractionObject)
             {
-                state.Routine.IsInTaskLocation = true;
-                Vector3 randomPoint = state.Routine.currentTaskLocation.GetRandomPointInArea();
-                state.MoveToPosition(randomPoint);
+                state.StopNPC();
+                state.OrientToPosition(state.Interaction.CurrentSlot.interactionMarker);
+                state.Interaction.isAtInteractionMarker = true;
+                state.Interaction.currentInteractionObject.CheckInteractionReady();
                 return;
             }
 
-            state.ReplaceAnimationClip(state.Routine.currentTaskLocation.PlayAnimationAtLocation(), "_Routine");
-            state.Animator.SetTrigger("SetRoutine");
+            // or should I continue free roaming
+            if (state.Routine.activityOnFreeTime == FreeTimeActivity.Free_Roam)
+                state.UpdateNodePath();
         }
 
+        // do I currently have a task?
+        if (state.Routine.currentTaskLocation != null)
+        {
+            if (!state.Routine.IsInTaskLocation)
+            {
+                state.Routine.currentTaskLocation.OnNPCEnter(state);
+            }
+
+            // if the task location is an area (park, beach, playground, etc.)
+            if (!state.NPCModel.activeSelf)
+                return;
+
+            if (state.Routine.currentTaskLocation.isArea)
+            {
+                if (!state.Routine.IsInTaskLocation)
+                {
+                    state.Routine.IsInTaskLocation = true;
+                    Vector3 randomPoint = state.Routine.currentTaskLocation.GetRandomPointInArea();
+                    state.MoveToPosition(randomPoint);
+                    return;
+                }
+
+                state.ReplaceAnimationClip(state.Routine.currentTaskLocation.PlayAnimationAtLocation(), "_Routine");
+                state.Animator.SetTrigger("SetRoutine");
+            }
+        }
+       
     }
 
     public override void IntializeState(NPCBaseState state)

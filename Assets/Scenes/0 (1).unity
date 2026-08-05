@@ -943,8 +943,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PathNode
   nextWaypoint: {fileID: 2012985257}
-  waypointBranches:
-  - {fileID: 0}
+  waypointBranches: []
   branchRatio: 0.5
   idleTime: 0
 --- !u!4 &704707359
@@ -1335,7 +1334,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1975739624897359735, guid: 0e1ffebaabf91434ca12aec0d7840a64, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 5.81
+      value: -7.2
       objectReference: {fileID: 0}
     - target: {fileID: 1975739624897359735, guid: 0e1ffebaabf91434ca12aec0d7840a64, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1343,7 +1342,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1975739624897359735, guid: 0e1ffebaabf91434ca12aec0d7840a64, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -16.96
+      value: -3.47
       objectReference: {fileID: 0}
     - target: {fileID: 1975739624897359735, guid: 0e1ffebaabf91434ca12aec0d7840a64, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1388,10 +1387,10 @@ PrefabInstance:
     - target: {fileID: 4346181677611183583, guid: 0e1ffebaabf91434ca12aec0d7840a64, type: 3}
       propertyPath: routineSchedule
       value: 
-      objectReference: {fileID: 11400000, guid: 1cf0c9aa1746dec49ab9f28687256e0c, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 4346181677611183583, guid: 0e1ffebaabf91434ca12aec0d7840a64, type: 3}
       propertyPath: activityOnFreeTime
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1480,16 +1479,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractionActionObject
   _displayName: SPORTS CAR
-  _interactionType: 0
+  ShouldAllBeOccupied: 1
   _interactionTag: sports car
+  interactionDuration: 10
+  postInteractionWaitTime: 30
   interactionSlots:
   - occupant: {fileID: 0}
     interactionMarker: {fileID: 1432634210}
-    interactionClip: {fileID: 0}
+    interactionClip: {fileID: -3653903301323177373, guid: 7c379c55e0a057d4c8a3ae6c3b6e4b40, type: 3}
     isOccupied: 0
   - occupant: {fileID: 0}
     interactionMarker: {fileID: 1877160537}
-    interactionClip: {fileID: 0}
+    interactionClip: {fileID: 3562819820402657248, guid: 8532cd465b8ac2146b2761f506b35904, type: 3}
     isOccupied: 0
   interactionMarkerColor: {r: 0.678673, g: 1, b: 0, a: 1}
 --- !u!1001 &1068972727
@@ -1623,7 +1624,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1432634210}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Phototaker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1637,13 +1638,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1432634209}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 1.87, y: 0, z: 1.6}
+  m_LocalRotation: {x: -0, y: -0.9659259, z: -0, w: 0.25881907}
+  m_LocalPosition: {x: 2.8700001, y: 0, z: 1.6000004}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4996139825951132}
-  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -150, z: 0}
 --- !u!1 &1522485396
 GameObject:
   m_ObjectHideFlags: 0
@@ -1892,7 +1893,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1877160537}
   m_Layer: 0
-  m_Name: GameObject (1)
+  m_Name: Poser
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1907,7 +1908,7 @@ Transform:
   m_GameObject: {fileID: 1877160536}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 1.87, y: 0, z: -1.3999987}
+  m_LocalPosition: {x: 1.751, y: 0, z: -1.718}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2478,7 +2479,7 @@ Transform:
   m_GameObject: {fileID: 1684009403129224}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -4.08, y: 0.49974975, z: 10.33}
+  m_LocalPosition: {x: -4.83, y: 0.49974975, z: 9.02}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2894,7 +2895,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 5
+  m_Radius: 8.67
   m_Center: {x: 0, y: 0, z: 0.0022603273}
 --- !u!54 &33734209927981590
 Rigidbody:
@@ -4704,6 +4705,14 @@ PrefabInstance:
       propertyPath: locationManager
       value: 
       objectReference: {fileID: 126841763}
+    - target: {fileID: 4346181677611183583, guid: 0e1ffebaabf91434ca12aec0d7840a64, type: 3}
+      propertyPath: routineSchedule
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4346181677611183583, guid: 0e1ffebaabf91434ca12aec0d7840a64, type: 3}
+      propertyPath: activityOnFreeTime
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

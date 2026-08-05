@@ -44,11 +44,6 @@ public class NPC_MovingState : NPCBaseState
         if (!state.HasReachedDestination())
             return;
 
-        if (!state.Routine.IsInTaskLocation && state.Routine.currentTaskLocation != null)
-        {
-            state.Routine.currentTaskLocation.OnNPCEnter(state);
-        }
-
         _npc.OnStateSwitch(_npc.idleState);
     }
 

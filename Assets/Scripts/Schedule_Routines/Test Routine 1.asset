@@ -15,5 +15,5 @@ MonoBehaviour:
   blocks:
   - blockName: 'Go To Work '
     startHour: 2
-    endHour: 20
+    endHour: 7
     destinationID: 1111

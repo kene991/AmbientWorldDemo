@@ -7,7 +7,7 @@ public enum FreeTimeActivity
     Free_Roam,
     ReturnHome,
     //Socialize,
-    //InteractIGA,
+    //InteractIAO,
     //Sit
 }
 
@@ -59,16 +59,21 @@ public class NPCRoutine : MonoBehaviour
 
         _intervalTime = currentHour;
 
-        RoutineBlock newBlock = routineSchedule.GetBlock(currentHour);
+        if (routineSchedule != null)
+        {
+            RoutineBlock newBlock = routineSchedule.GetBlock(currentHour);
 
-        // Nothing changed
-        if (newBlock?.blockName == currentRoutineBlock?.blockName)
-            return;
+            // Nothing changed
+            if (newBlock?.blockName == currentRoutineBlock?.blockName)
+                return;
 
-        currentRoutineBlock = newBlock;
-        isInFreeTime = currentRoutineBlock == null;
+            currentRoutineBlock = newBlock;
 
-        OnRoutineChanged();
+            OnRoutineChanged();
+        }
+
+        isInFreeTime = (currentRoutineBlock == null) || routineSchedule == null;
+
     }
 
     private void OnRoutineChanged()
@@ -91,14 +96,18 @@ public class NPCRoutine : MonoBehaviour
                 _agentMachine.UpdateNodePath();
             
             if (activityOnFreeTime == FreeTimeActivity.ReturnHome)
-                GoToTaskLocation(locationManager.GetLocation(3546));
+                _agentMachine.MoveToPosition(locationManager.GetLocation(3546).entryPoint.position);
 
-            return;
+            //if (activityOnFreeTime == FreeTimeActivity.InteractIAO)
+
+        }
+        else
+        {
+            //go to the location set on their current routine block
+            _agentMachine.currentPathNode = null;
+            GoToTaskLocation(locationManager.GetLocation(currentRoutineBlock.destinationID));
         }
 
-        _agentMachine.currentPathNode = null;
-        //go to the location set on their current routine block
-        GoToTaskLocation(locationManager.GetLocation(currentRoutineBlock.destinationID));
     }
 
     public void GoToTaskLocation(Location location)

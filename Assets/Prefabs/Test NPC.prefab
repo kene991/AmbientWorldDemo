@@ -403,6 +403,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NPCInteraction
   interactableTags:
   - sports car
+  interactionCooldownTime: 0
+  isAtInteractionMarker: 0
+  canInteract: 1
   currentInteractionObject: {fileID: 0}
 --- !u!195 &499183976794831889
 NavMeshAgent:
