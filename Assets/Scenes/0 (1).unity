@@ -1460,8 +1460,8 @@ NavMeshObstacle:
   m_Enabled: 1
   serializedVersion: 3
   m_Shape: 1
-  m_Extents: {x: 0.865, y: 0.632, z: 2.08}
-  m_MoveThreshold: 0.1
+  m_Extents: {x: 0.865, y: 0.632, z: 2.98}
+  m_MoveThreshold: 1
   m_Carve: 1
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 0.762, z: 0.002}
@@ -4661,6 +4661,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Test NPC
       objectReference: {fileID: 0}
+    - target: {fileID: 499183976794831889, guid: 0e1ffebaabf91434ca12aec0d7840a64, type: 3}
+      propertyPath: m_Radius
+      value: 0.7
+      objectReference: {fileID: 0}
     - target: {fileID: 1975739624897359735, guid: 0e1ffebaabf91434ca12aec0d7840a64, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.81
@@ -4708,7 +4712,7 @@ PrefabInstance:
     - target: {fileID: 4346181677611183583, guid: 0e1ffebaabf91434ca12aec0d7840a64, type: 3}
       propertyPath: routineSchedule
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 11400000, guid: 1cf0c9aa1746dec49ab9f28687256e0c, type: 2}
     - target: {fileID: 4346181677611183583, guid: 0e1ffebaabf91434ca12aec0d7840a64, type: 3}
       propertyPath: activityOnFreeTime
       value: 0

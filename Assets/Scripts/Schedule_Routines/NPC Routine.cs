@@ -2,19 +2,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public enum FreeTimeActivity
-{
-    Free_Roam,
-    ReturnHome,
-    //Socialize,
-    //InteractIAO,
-    //Sit
-}
 
 public class NPCRoutine : MonoBehaviour
 {
     [SerializeField] private LocationManager locationManager;
     private NPCStateMachine _agentMachine;
+    private NPCInteraction NPCInteraction;
     private int _intervalTime;
 
     [Header("Destination Location")]
@@ -24,7 +17,6 @@ public class NPCRoutine : MonoBehaviour
     [Header("Activity Settings")]
     [SerializeField] bool isInFreeTime; //if the the npc has free time
     public bool IsInFreeTime { get { return isInFreeTime; } set { isInFreeTime = value; } }
-    public FreeTimeActivity activityOnFreeTime;
 
     [Header("Routine Settings")]
     public RoutineSO routineSchedule;
@@ -33,6 +25,7 @@ public class NPCRoutine : MonoBehaviour
     private void Awake()
     {
         _agentMachine = GetComponent<NPCStateMachine>();
+        NPCInteraction = GetComponent<NPCInteraction>();
     }
 
     private void Start()
@@ -69,10 +62,18 @@ public class NPCRoutine : MonoBehaviour
 
             currentRoutineBlock = newBlock;
 
+            isInFreeTime = (currentRoutineBlock == null);
             OnRoutineChanged();
         }
+        else
+        {
+            // so it doesn't get called again when hour updates
+            if (IsInFreeTime == true)
+                return;
 
-        isInFreeTime = (currentRoutineBlock == null) || routineSchedule == null;
+            IsInFreeTime = true;
+            HandleFreeTime();
+        }
 
     }
 
@@ -81,33 +82,35 @@ public class NPCRoutine : MonoBehaviour
         // based on a free-time activity do either of these
         if (isInFreeTime)
         {
-            //exit routine task location if npc has one
-            if (currentTaskLocation)
-            {
-                currentTaskLocation.OnNPCExit(_agentMachine);
-                currentTaskLocation = null;
-                IsInTaskLocation = false;
-            }
-
-            //set agent back to active on
-            _agentMachine.NPCModel.SetActive(true);
-
-            if (activityOnFreeTime == FreeTimeActivity.Free_Roam)
-                _agentMachine.UpdateNodePath();
-            
-            if (activityOnFreeTime == FreeTimeActivity.ReturnHome)
-                _agentMachine.MoveToPosition(locationManager.GetLocation(3546).entryPoint.position);
-
-            //if (activityOnFreeTime == FreeTimeActivity.InteractIAO)
-
+            HandleFreeTime();
         }
         else
         {
+            // if npcs are interacting with smartobject, it has to be cancelled
+             if (NPCInteraction.currentInteractionObject)
+                NPCInteraction.EndInteraction();
+
             //go to the location set on their current routine block
             _agentMachine.currentPathNode = null;
             GoToTaskLocation(locationManager.GetLocation(currentRoutineBlock.destinationID));
         }
 
+    }
+
+    private void HandleFreeTime()
+    {
+        //exit routine task location if npc has one
+        if (currentTaskLocation)
+        {
+            currentTaskLocation.OnNPCExit(_agentMachine);
+            currentTaskLocation = null;
+            IsInTaskLocation = false;
+        }
+
+        //set agent back to active on
+        _agentMachine.NPCModel.SetActive(true);
+
+        _agentMachine.UpdateNodePath();
     }
 
     public void GoToTaskLocation(Location location)

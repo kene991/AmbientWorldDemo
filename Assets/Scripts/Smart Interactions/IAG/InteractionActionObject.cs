@@ -36,17 +36,20 @@ public class InteractionActionObject : MonoBehaviour
     public string InteractionTag => _interactionTag;
     public string DisplayName => _displayName;
 
-    private Coroutine interactionRoutine;
-
-    public void CheckInteractionReady()
+    public void StartGroupInteraction()
     {
-        if (!CanPerform())
-            return;
+        foreach (var slot in interactionSlots)
+        {
+            if (slot.occupant == null)
+                continue;
+            if (!slot.occupant.isAtInteractionMarker)
+                continue;
 
-        interactionRoutine = StartCoroutine(InteractionRoutine());
+            slot.occupant.StartSingleInteraction();
+        }
     }
 
-    public virtual bool CanInteract(NPCInteraction npc)
+    public bool CanInteract(NPCInteraction npc)
     {
         foreach (var item in npc.interactableTags)
         {
@@ -86,55 +89,24 @@ public class InteractionActionObject : MonoBehaviour
         slot.isOccupied = false;
         slot.occupant = null;
 
+        npc.isAtInteractionMarker = false;
         npc.CurrentSlot = null;
         npc.currentInteractionObject = null;
-        npc.isAtInteractionMarker = false;
     }
 
-    private IEnumerator InteractionRoutine()
-    {
-        StartInteraction();
-
-        yield return new WaitForSeconds(interactionDuration);
-
-        EndInteraction();
-    }
-
-    //this is the default ending to an interaction, overrides and factors will come into play
-    private void EndInteraction()
-    {
-        foreach(var slot in interactionSlots)
-        {
-            // prevent interaction from immediately happening
-            slot.occupant.interactionCooldownTime += postInteractionWaitTime;
-
-            // default logic for now
-            slot.occupant.GetNPCStateMachine().UpdateNodePath();
-        }
-    }
-
-    private bool CanPerform()
+    public void CanPerform(NPCInteraction npc)
     {
         //should all agents be at the marker before executing?
         if (ShouldAllBeOccupied)
         {
-            return interactionSlots.All(slot => slot.occupant != null && slot.occupant.isAtInteractionMarker);
+            if (interactionSlots.All(slot => slot.occupant != null && slot.occupant.isAtInteractionMarker))
+            {
+                StartGroupInteraction();
+            } 
         }
-
-        return interactionSlots.Any(slot => slot.occupant != null && slot.occupant.isAtInteractionMarker);
-    }
-
-    private void StartInteraction()
-    {
-        foreach (var slot in interactionSlots)
+        else
         {
-            if (slot.occupant == null)
-                continue;
-            if (!slot.occupant.isAtInteractionMarker)
-                continue;
-
-            slot.occupant.GetNPCStateMachine().ReplaceAnimationClip(slot.occupant.CurrentSlot.interactionClip, "_Interact");
-            slot.occupant.GetNPCStateMachine().Animator.SetTrigger("SetInteraction");
+            npc.StartSingleInteraction();
         }
     }
 

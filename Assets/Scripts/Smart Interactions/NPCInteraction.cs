@@ -1,5 +1,6 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using static InteractionActionObject;
 
 public class NPCInteraction : MonoBehaviour
 {
@@ -31,6 +32,7 @@ public class NPCInteraction : MonoBehaviour
     {
         if (interactionCooldownTime > 0f)
         {
+            canInteract = false;
             interactionCooldownTime -= Time.deltaTime;
             interactionCooldownTime = Mathf.Max(0f, interactionCooldownTime);
 
@@ -52,6 +54,23 @@ public class NPCInteraction : MonoBehaviour
 
     //}
 
+    public void StartSingleInteraction()
+    {
+        if (!isAtInteractionMarker)
+            return;
+
+        GetNPCStateMachine().ReplaceAnimationClip(CurrentSlot.interactionClip, "_Interact");
+        GetNPCStateMachine().Animator.SetTrigger("SetInteraction");  
+    }
+
+    public void EndInteraction()
+    {
+        interactionCooldownTime += currentInteractionObject.postInteractionWaitTime;
+
+        Debug.Log($"Released {currentInteractionObject.DisplayName}, {currentSlot.interactionMarker.name} has been opened!");
+        currentInteractionObject.ReleaseSlot(this, currentSlot);
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.TryGetComponent(out InteractionActionObject interaction))
@@ -71,15 +90,4 @@ public class NPCInteraction : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.TryGetComponent(out InteractionActionObject interaction))
-        {
-            if (currentInteractionObject == null)
-                return;
-
-            Debug.Log($"Released {interaction.DisplayName}, {currentSlot.interactionMarker.name} has been opened!");
-            interaction.ReleaseSlot(this, currentSlot);
-        }
-    }
 }

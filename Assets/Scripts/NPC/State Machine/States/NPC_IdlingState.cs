@@ -20,13 +20,13 @@ public class NPC_IdlingState : NPCBaseState
                 state.StopNPC();
                 state.OrientToPosition(state.Interaction.CurrentSlot.interactionMarker);
                 state.Interaction.isAtInteractionMarker = true;
-                state.Interaction.currentInteractionObject.CheckInteractionReady();
+                state.Interaction.currentInteractionObject.CanPerform(state.Interaction);
+
                 return;
             }
 
             // or should I continue free roaming
-            if (state.Routine.activityOnFreeTime == FreeTimeActivity.Free_Roam)
-                state.UpdateNodePath();
+            state.UpdateNodePath();
         }
 
         // do I currently have a task?
