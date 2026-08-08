@@ -1,6 +1,6 @@
 using Unity.VisualScripting;
 using UnityEngine;
-using static InteractionActionObject;
+using static InteractionActionZone;
 
 public class NPCInteraction : MonoBehaviour
 {
@@ -16,11 +16,10 @@ public class NPCInteraction : MonoBehaviour
     public bool canInteract;
 
     [Header("Interaction Action Settings")]
-    public InteractionActionObject currentInteractionObject;
-    private InteractionActionObject.InteractionSlot currentSlot;
-    public InteractionActionObject.InteractionSlot CurrentSlot {  get { return currentSlot; } set { currentSlot = value; } }
+    public InteractionActionZone currentInteractionObject;
+    private InteractionActionZone.InteractionSlot currentSlot;
+    public InteractionActionZone.InteractionSlot CurrentSlot {  get { return currentSlot; } set { currentSlot = value; } }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         NPCStateMachine = GetComponent<NPCStateMachine>();
@@ -65,6 +64,8 @@ public class NPCInteraction : MonoBehaviour
 
     public void EndInteraction()
     {
+        GetNPCStateMachine().Obstacle.enabled = false;
+        GetNPCStateMachine().ResumeNPC();
         interactionCooldownTime += currentInteractionObject.postInteractionWaitTime;
 
         Debug.Log($"Released {currentInteractionObject.DisplayName}, {currentSlot.interactionMarker.name} has been opened!");
@@ -73,9 +74,9 @@ public class NPCInteraction : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent(out InteractionActionObject interaction))
+        if (other.TryGetComponent(out InteractionActionZone interaction))
         {
-            if (!NPCRoutine.IsInFreeTime)
+            if (!canInteract || !NPCRoutine.IsInFreeTime)
                 return;
 
             if (!interaction.CanInteract(this))

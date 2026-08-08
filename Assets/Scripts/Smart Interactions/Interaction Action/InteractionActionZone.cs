@@ -5,12 +5,13 @@ using UnityEditor;
 using UnityEngine;
 
 [RequireComponent(typeof(SphereCollider))]
-public class InteractionActionObject : MonoBehaviour
+public class InteractionActionZone : MonoBehaviour
 {
     [System.Serializable]
     public class InteractionSlot
     {
         [HideInInspector] public NPCInteraction occupant;
+        public string roleName;
         public Transform interactionMarker;
         public AnimationClip interactionClip;
         public bool isOccupied;
@@ -28,7 +29,7 @@ public class InteractionActionObject : MonoBehaviour
     public float postInteractionWaitTime;
 
     [Header("Actor Settings")]
-    public InteractionSlot[] interactionSlots;
+    public InteractionSlot[] interactionRoles;
 
     [Header("Debug")]
     public Color interactionMarkerColor;
@@ -38,7 +39,7 @@ public class InteractionActionObject : MonoBehaviour
 
     public void StartGroupInteraction()
     {
-        foreach (var slot in interactionSlots)
+        foreach (var slot in interactionRoles)
         {
             if (slot.occupant == null)
                 continue;
@@ -63,7 +64,7 @@ public class InteractionActionObject : MonoBehaviour
 
     public InteractionSlot GetFreeSlot()
     {
-        foreach (var slot in interactionSlots)
+        foreach (var slot in interactionRoles)
         {
             if (slot.occupant == null)
                 return slot;
@@ -99,7 +100,7 @@ public class InteractionActionObject : MonoBehaviour
         //should all agents be at the marker before executing?
         if (ShouldAllBeOccupied)
         {
-            if (interactionSlots.All(slot => slot.occupant != null && slot.occupant.isAtInteractionMarker))
+            if (interactionRoles.All(slot => slot.occupant != null && slot.occupant.isAtInteractionMarker))
             {
                 StartGroupInteraction();
             } 
@@ -113,9 +114,9 @@ public class InteractionActionObject : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if (interactionSlots.Length > 0)
+        if (interactionRoles.Length > 0)
         {
-            foreach (var slot in interactionSlots)
+            foreach (var slot in interactionRoles)
             {
                 if (slot.interactionMarker == null)
                     continue;
@@ -124,6 +125,9 @@ public class InteractionActionObject : MonoBehaviour
                     Gizmos.color = Color.red;
                 else 
                     Gizmos.color = interactionMarkerColor;
+
+                if (slot.roleName != string.Empty)
+                    slot.interactionMarker.gameObject.name = slot.roleName;
 
                 Gizmos.DrawSphere(slot.interactionMarker.position, 0.3f);
 

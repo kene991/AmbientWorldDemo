@@ -328,6 +328,7 @@ GameObject:
   - component: {fileID: 499183976794831889}
   - component: {fileID: 2876819381732851531}
   - component: {fileID: 4536327387243136471}
+  - component: {fileID: 3370952106525084845}
   m_Layer: 0
   m_Name: Test NPC
   m_TagString: Untagged
@@ -382,8 +383,7 @@ MonoBehaviour:
   IsInTaskLocation: 0
   currentTaskLocation: {fileID: 0}
   isInFreeTime: 0
-  activityOnFreeTime: 1
-  routineSchedule: {fileID: 11400000, guid: e30829442a64fa44d94ba59683396472, type: 2}
+  routineSchedule: {fileID: 11400000, guid: 1cf0c9aa1746dec49ab9f28687256e0c, type: 2}
   currentRoutineBlock:
     blockName: 
     startHour: 0
@@ -474,6 +474,22 @@ CapsuleCollider:
   m_Height: 1.7
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!208 &3370952106525084845
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 490084261460884511}
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Shape: 0
+  m_Extents: {x: 0.5, y: 1, z: 0.5}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &774002847490716934
 GameObject:
   m_ObjectHideFlags: 0

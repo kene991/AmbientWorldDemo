@@ -7,6 +7,8 @@ public class NPCStateMachine : MonoBehaviour
 {
     private NavMeshAgent _agent;
     public NavMeshAgent Agent { get { return _agent; } set { _agent = value; } }
+    private NavMeshObstacle _obstacle;
+    public NavMeshObstacle Obstacle { get { return _obstacle; } set { _obstacle = value; } }
 
     private Animator _npcAnimator;
     public Animator Animator { get { return _npcAnimator; } set { _npcAnimator = value; } }
@@ -36,6 +38,7 @@ public class NPCStateMachine : MonoBehaviour
         npcModel = transform.GetChild(0).gameObject;
         _npcAnimator = GetComponent<Animator>();
         _agent = GetComponent<NavMeshAgent>();
+        _obstacle = GetComponent<NavMeshObstacle>();
 
         routine = GetComponent<NPCRoutine>();
         interaction = GetComponent<NPCInteraction>();
@@ -80,13 +83,19 @@ public class NPCStateMachine : MonoBehaviour
         StartCoroutine(stateCoroutine);
     }
 
-    public void StopNPC()
+    public void StopNPC(bool includeNavMeshComponent = true)
     {
-        Agent.isStopped = true;
+        Agent.enabled = includeNavMeshComponent;
+
+        if (includeNavMeshComponent == true)
+            Agent.isStopped = true;
     }
 
     public void ResumeNPC()
     {
+        if (!Agent.enabled)
+            Agent.enabled = true;
+
         Agent.isStopped = false;
     }
 

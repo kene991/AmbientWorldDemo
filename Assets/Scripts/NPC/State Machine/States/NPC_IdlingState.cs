@@ -17,7 +17,8 @@ public class NPC_IdlingState : NPCBaseState
             // I stopped to interact with something
             if (state.Interaction.currentInteractionObject)
             {
-                state.StopNPC();
+                state.StopNPC(false);
+                state.Obstacle.enabled = true;
                 state.OrientToPosition(state.Interaction.CurrentSlot.interactionMarker);
                 state.Interaction.isAtInteractionMarker = true;
                 state.Interaction.currentInteractionObject.CanPerform(state.Interaction);
