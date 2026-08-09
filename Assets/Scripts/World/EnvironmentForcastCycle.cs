@@ -16,12 +16,6 @@ public class EnvironmentForcastCycle : ScriptableObject
     public int startTimespanForRain;
     [Range(0, 24)]
     public int endTimespanForRain;    
-    
-    public bool enablesSnow;
-    [Range(0, 24)]
-    public int startTimespanForSnow;
-    [Range(0, 24)]
-    public int endTimespanForSnow;
 
     [Header("Stars")]
     public AnimationCurve starHeightMask;    

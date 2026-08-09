@@ -16,9 +16,9 @@ public class NPCInteraction : MonoBehaviour
     public bool canInteract;
 
     [Header("Interaction Action Settings")]
-    public InteractionActionZone currentInteractionObject;
-    private InteractionActionZone.InteractionSlot currentSlot;
-    public InteractionActionZone.InteractionSlot CurrentSlot {  get { return currentSlot; } set { currentSlot = value; } }
+    public InteractionAction currentInteractionObject;
+    private InteractionAction.InteractionSlot currentSlot;
+    public InteractionAction.InteractionSlot CurrentSlot {  get { return currentSlot; } set { currentSlot = value; } }
 
     void Start()
     {
@@ -53,28 +53,11 @@ public class NPCInteraction : MonoBehaviour
 
     //}
 
-    public void StartSingleInteraction()
-    {
-        if (!isAtInteractionMarker)
-            return;
 
-        GetNPCStateMachine().ReplaceAnimationClip(CurrentSlot.interactionClip, "_Interact");
-        GetNPCStateMachine().Animator.SetTrigger("SetInteraction");  
-    }
-
-    public void EndInteraction()
-    {
-        GetNPCStateMachine().Obstacle.enabled = false;
-        GetNPCStateMachine().ResumeNPC();
-        interactionCooldownTime += currentInteractionObject.postInteractionWaitTime;
-
-        Debug.Log($"Released {currentInteractionObject.DisplayName}, {currentSlot.interactionMarker.name} has been opened!");
-        currentInteractionObject.ReleaseSlot(this, currentSlot);
-    }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent(out InteractionActionZone interaction))
+        if (other.TryGetComponent(out InteractionAction interaction))
         {
             if (!canInteract || !NPCRoutine.IsInFreeTime)
                 return;

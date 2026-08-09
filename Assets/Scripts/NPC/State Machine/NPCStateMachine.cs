@@ -170,7 +170,6 @@ public class NPCStateMachine : MonoBehaviour
             return node.waypointBranches[Random.Range(0, node.waypointBranches.Count)];
         }
 
-        print("next again");
         return node.nextWaypoint;
     }
     #endregion

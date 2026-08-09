@@ -5,96 +5,12 @@ using UnityEditor;
 using UnityEngine;
 
 [RequireComponent(typeof(SphereCollider))]
-public class InteractionActionZone : MonoBehaviour
+public class InteractionActionZone : InteractionAction
 {
-    [System.Serializable]
-    public class InteractionSlot
-    {
-        [HideInInspector] public NPCInteraction occupant;
-        public string roleName;
-        public Transform interactionMarker;
-        public AnimationClip interactionClip;
-        public bool isOccupied;
-    }
-
-    [Header("Object Settings")]
-    [SerializeField] protected string _displayName;
-
-    [Header("Trigger Settings")]
+    [Header("Zone Condition Settings")]
     public bool ShouldAllBeOccupied; //is all slots occupied
 
-    [Header("Interaction Settings")]
-    [SerializeField] protected string _interactionTag;
-    public float interactionDuration;
-    public float postInteractionWaitTime;
-
-    [Header("Actor Settings")]
-    public InteractionSlot[] interactionRoles;
-
-    [Header("Debug")]
-    public Color interactionMarkerColor;
-
-    public string InteractionTag => _interactionTag;
-    public string DisplayName => _displayName;
-
-    public void StartGroupInteraction()
-    {
-        foreach (var slot in interactionRoles)
-        {
-            if (slot.occupant == null)
-                continue;
-            if (!slot.occupant.isAtInteractionMarker)
-                continue;
-
-            slot.occupant.StartSingleInteraction();
-        }
-    }
-
-    public bool CanInteract(NPCInteraction npc)
-    {
-        foreach (var item in npc.interactableTags)
-        {
-            if (item.ToLower() != _interactionTag.ToLower())
-                return false;
-        }
-
-        //world condition checks
-        return true;
-    }
-
-    public InteractionSlot GetFreeSlot()
-    {
-        foreach (var slot in interactionRoles)
-        {
-            if (slot.occupant == null)
-                return slot;
-        }
-
-        return null;
-    }
-
-    public bool ReserveSlot(NPCInteraction npc, out InteractionSlot slot)
-    {
-        slot = GetFreeSlot();
-
-        if (slot == null)
-            return false;
-
-        npc.currentInteractionObject = this;
-        slot.occupant = npc;
-        return true;
-    }
-
-    public void ReleaseSlot(NPCInteraction npc, InteractionSlot slot)
-    {
-        slot.isOccupied = false;
-        slot.occupant = null;
-
-        npc.isAtInteractionMarker = false;
-        npc.CurrentSlot = null;
-        npc.currentInteractionObject = null;
-    }
-
+    // checks if the interaction required all slots fill or not before firing
     public void CanPerform(NPCInteraction npc)
     {
         //should all agents be at the marker before executing?
@@ -103,37 +19,66 @@ public class InteractionActionZone : MonoBehaviour
             if (interactionRoles.All(slot => slot.occupant != null && slot.occupant.isAtInteractionMarker))
             {
                 StartGroupInteraction();
-            } 
+            }
         }
         else
         {
-            npc.StartSingleInteraction();
+            StartSingleInteraction(npc);
         }
     }
 
-
-    private void OnDrawGizmos()
+    public void EndInteractionCheck(NPCInteraction npc)
     {
-        if (interactionRoles.Length > 0)
+        if (ShouldAllBeOccupied)
         {
-            foreach (var slot in interactionRoles)
-            {
-                if (slot.interactionMarker == null)
-                    continue;
+            EndGroupInteraction(npc);
+            return;
+        }
 
-                if (slot.isOccupied)
-                    Gizmos.color = Color.red;
-                else 
-                    Gizmos.color = interactionMarkerColor;
+        EndSingleInteraction(npc);
+    }
 
-                if (slot.roleName != string.Empty)
-                    slot.interactionMarker.gameObject.name = slot.roleName;
+    private void StartSingleInteraction(NPCInteraction npc)
+    {
+        if (!npc.isAtInteractionMarker)
+            return;
 
-                Gizmos.DrawSphere(slot.interactionMarker.position, 0.3f);
+        npc.GetNPCStateMachine().ReplaceAnimationClip(npc.CurrentSlot.interactionClip, "_Interact");
+        npc.GetNPCStateMachine().Animator.SetTrigger("SetInteraction");
+    }
 
-                GUI.color = Color.white;
-                Handles.Label(slot.interactionMarker.transform.position + Vector3.up * 0.5f, slot.interactionMarker.name);
-            }
+    private void EndSingleInteraction(NPCInteraction npc)
+    {
+        npc.GetNPCStateMachine().Obstacle.enabled = false;
+        npc.GetNPCStateMachine().ResumeNPC();
+        npc.interactionCooldownTime += npc.currentInteractionObject.postInteractionWaitTime;
+
+        Debug.Log($"Released {npc.currentInteractionObject.DisplayName}, {npc.CurrentSlot.interactionMarker.name} has been opened!");
+        npc.currentInteractionObject.ReleaseSlot(npc, npc.CurrentSlot);
+    }
+
+    private void StartGroupInteraction()
+    {
+        foreach (var slot in interactionRoles)
+        {
+            if (slot.occupant == null)
+                continue;
+            if (!slot.occupant.isAtInteractionMarker)
+                continue;
+
+            StartSingleInteraction(slot.occupant);
         }
     }
+
+    private void EndGroupInteraction(NPCInteraction npc)
+    {
+        foreach (var slot in interactionRoles)
+        {
+            if (slot.occupant == null)
+                continue;
+
+            EndSingleInteraction(slot.occupant);
+        }
+    }
+
 }

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnvironmentSkyCycleManager : MonoBehaviour
+public class ForecastCycleManager : MonoBehaviour
 {
 
     private GameClockManager _clockManager;

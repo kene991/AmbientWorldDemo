@@ -87,8 +87,8 @@ public class NPCRoutine : MonoBehaviour
         else
         {
             // if npcs are interacting with smartobject, it has to be cancelled
-             if (NPCInteraction.currentInteractionObject)
-                NPCInteraction.EndInteraction();
+            if (NPCInteraction.currentInteractionObject.TryGetComponent<InteractionActionZone>(out var actionZone))
+                actionZone.EndInteractionCheck(NPCInteraction);
 
             //go to the location set on their current routine block
             _agentMachine.currentPathNode = null;

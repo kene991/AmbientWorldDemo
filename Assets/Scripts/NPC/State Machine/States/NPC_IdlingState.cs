@@ -21,7 +21,10 @@ public class NPC_IdlingState : NPCBaseState
                 state.Obstacle.enabled = true;
                 state.OrientToPosition(state.Interaction.CurrentSlot.interactionMarker);
                 state.Interaction.isAtInteractionMarker = true;
-                state.Interaction.currentInteractionObject.CanPerform(state.Interaction);
+
+                //which interaction action is it?
+                if (state.Interaction.currentInteractionObject.TryGetComponent<InteractionActionZone>(out var actionZone))
+                    actionZone.CanPerform(state.Interaction);
 
                 return;
             }
