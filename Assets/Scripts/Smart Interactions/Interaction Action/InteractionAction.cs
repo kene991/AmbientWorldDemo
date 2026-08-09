@@ -1,6 +1,11 @@
+using NUnit.Framework;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Events;
 
+[RequireComponent(typeof(SphereCollider))]
 public abstract class InteractionAction : MonoBehaviour
 {
     [System.Serializable]
@@ -10,7 +15,10 @@ public abstract class InteractionAction : MonoBehaviour
         public string roleName;
         public Transform interactionMarker;
         public AnimationClip interactionClip;
-        public bool isOccupied;
+
+        [Header("Role Events")]
+        public UnityEvent OnInteractionStart;
+        public UnityEvent OnInteractionEnd;
     }
 
     [Header("Object Settings")]
@@ -32,21 +40,32 @@ public abstract class InteractionAction : MonoBehaviour
     public string InteractionTag => _interactionTag;
     public string DisplayName => _displayName;
 
+    public abstract void OnInteractionStart(NPCInteraction npc);
+    public abstract void OnInteractionEnd(NPCInteraction npc);
+
     // basically conditions (world and npc influenced conditions for the interaction object to be interactable)
     public virtual bool CanInteract(NPCInteraction npc)
     {
-        foreach (var item in npc.interactableTags)
+        bool requiredTagFound = false;
+
+        foreach (var tag in npc.interactableTags)
         {
-            if (item.ToLower() != _interactionTag.ToLower())
-                return false;
+            if (tag.ToLower() == _interactionTag.ToLower())
+            {
+                requiredTagFound = true;
+            }
+            else
+                continue;
         }
+
+        if (!requiredTagFound) return false;
 
         //world condition checks
         return true;
     }
 
     // finds any open slots for the npcs
-    public InteractionSlot GetFreeSlot()
+    public virtual InteractionSlot GetFreeSlot()
     {
         foreach (var slot in interactionRoles)
         {
@@ -58,7 +77,7 @@ public abstract class InteractionAction : MonoBehaviour
     }
 
     // assigns a role and slot for the npc that enters the slot
-    public bool ReserveSlot(NPCInteraction npc, out InteractionSlot slot)
+    public virtual bool ReserveSlot(NPCInteraction npc, out InteractionSlot slot)
     {
         slot = GetFreeSlot();
 
@@ -67,25 +86,29 @@ public abstract class InteractionAction : MonoBehaviour
 
         npc.currentInteractionObject = this;
         slot.occupant = npc;
+        Debug.Log($"Reserved {npc.currentInteractionObject.DisplayName}, {slot.interactionMarker.name} has been selected!");
         return true;
     }
 
     // release the slot for the role designed for the slot
-    public void ReleaseSlot(NPCInteraction npc, InteractionSlot slot)
+    public virtual void ReleaseSlot(NPCInteraction npc, InteractionSlot slot)
     {
-        slot.isOccupied = false;
         slot.occupant = null;
+
+        Debug.Log($"Released {npc.currentInteractionObject.DisplayName}, {npc.CurrentSlot.interactionMarker.name} has been opened!");
 
         npc.isAtInteractionMarker = false;
         npc.CurrentSlot = null;
         npc.currentInteractionObject = null;
+
 
         //checking if npc has no block in there schedule as time is updated via interval
         if (npc.GetNPCRoutine().IsInFreeTime)
             npc.GetNPCStateMachine().UpdateNodePath();
     }
 
-    private void OnDrawGizmos()
+    // used to debug slot points, can be overriden in other derived slots
+    public virtual void InteractionDebugger()
     {
         if (interactionRoles.Length > 0)
         {
@@ -94,7 +117,7 @@ public abstract class InteractionAction : MonoBehaviour
                 if (slot.interactionMarker == null)
                     continue;
 
-                if (slot.isOccupied)
+                if (slot.occupant)
                     Gizmos.color = Color.red;
                 else
                     Gizmos.color = interactionMarkerColor;
@@ -109,4 +132,10 @@ public abstract class InteractionAction : MonoBehaviour
             }
         }
     }
+
+    private void OnDrawGizmos()
+    {
+        InteractionDebugger();
+    }
+
 }

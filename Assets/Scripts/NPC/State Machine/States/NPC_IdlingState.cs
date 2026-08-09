@@ -22,15 +22,16 @@ public class NPC_IdlingState : NPCBaseState
                 state.OrientToPosition(state.Interaction.CurrentSlot.interactionMarker);
                 state.Interaction.isAtInteractionMarker = true;
 
-                //which interaction action is it?
-                if (state.Interaction.currentInteractionObject.TryGetComponent<InteractionActionZone>(out var actionZone))
-                    actionZone.CanPerform(state.Interaction);
+                //can call any interaction state
+                if (state.Interaction.currentInteractionObject.TryGetComponent<InteractionAction>(out var actionZone))
+                    actionZone.OnInteractionStart(state.Interaction);
 
-                return;
             }
-
-            // or should I continue free roaming
-            state.UpdateNodePath();
+            else
+            {
+                // or should I continue free roaming
+                state.UpdateNodePath();
+            }
         }
 
         // do I currently have a task?

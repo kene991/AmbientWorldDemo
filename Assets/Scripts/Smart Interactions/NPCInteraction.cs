@@ -53,7 +53,13 @@ public class NPCInteraction : MonoBehaviour
 
     //}
 
+    // just learned about accessing bones via animation
+    // https://docs.unity3d.com/6000.0/Documentation/ScriptReference/HumanBodyBones.html
 
+    public Transform GetBone(HumanBodyBones bone)
+    {
+        return NPCStateMachine.Animator.GetBoneTransform(bone);
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -66,9 +72,7 @@ public class NPCInteraction : MonoBehaviour
                 return;
 
             if(interaction.ReserveSlot(this, out currentSlot))
-            {
-                Debug.Log($"Reserved {interaction.DisplayName}, {currentSlot.interactionMarker.name} has been selected!");
-                currentSlot.isOccupied = true;
+            {          
                 NPCStateMachine.MoveToPosition(currentSlot.interactionMarker.position);
             }
         }

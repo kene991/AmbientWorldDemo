@@ -4,11 +4,21 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-[RequireComponent(typeof(SphereCollider))]
+
 public class InteractionActionZone : InteractionAction
 {
     [Header("Zone Condition Settings")]
     public bool ShouldAllBeOccupied; //is all slots occupied
+
+    public override void OnInteractionStart(NPCInteraction npc)
+    {
+        CanPerform(npc);
+    }
+
+    public override void OnInteractionEnd(NPCInteraction npc)
+    {
+        EndInteractionCheck(npc);
+    }
 
     // checks if the interaction required all slots fill or not before firing
     public void CanPerform(NPCInteraction npc)
@@ -45,6 +55,7 @@ public class InteractionActionZone : InteractionAction
 
         npc.GetNPCStateMachine().ReplaceAnimationClip(npc.CurrentSlot.interactionClip, "_Interact");
         npc.GetNPCStateMachine().Animator.SetTrigger("SetInteraction");
+        npc.CurrentSlot.OnInteractionStart.Invoke();
     }
 
     private void EndSingleInteraction(NPCInteraction npc)
@@ -53,7 +64,7 @@ public class InteractionActionZone : InteractionAction
         npc.GetNPCStateMachine().ResumeNPC();
         npc.interactionCooldownTime += npc.currentInteractionObject.postInteractionWaitTime;
 
-        Debug.Log($"Released {npc.currentInteractionObject.DisplayName}, {npc.CurrentSlot.interactionMarker.name} has been opened!");
+        npc.CurrentSlot.OnInteractionEnd.Invoke();
         npc.currentInteractionObject.ReleaseSlot(npc, npc.CurrentSlot);
     }
 
@@ -80,5 +91,4 @@ public class InteractionActionZone : InteractionAction
             EndSingleInteraction(slot.occupant);
         }
     }
-
 }
