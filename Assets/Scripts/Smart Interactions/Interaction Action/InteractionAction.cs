@@ -14,7 +14,10 @@ public abstract class InteractionAction : MonoBehaviour
         [HideInInspector] public NPCInteraction occupant;
         public string roleName;
         public Transform interactionMarker;
-        public AnimationClip interactionClip;
+        public AnimationType interaction;
+
+        [Header("Seated")]
+        public bool isSeated;
 
         [Header("Role Events")]
         public UnityEvent OnInteractionStart;

@@ -14,7 +14,7 @@ public class Location : MonoBehaviour
     public float areaRadius;
 
     [Header("Animations To Play At Location")]
-    public AnimationClip[] clipsAtLocation;
+    public AnimationType[] clipsAtLocation;
 
     public void OnNPCEnter(NPCStateMachine npc)
     {
@@ -38,13 +38,17 @@ public class Location : MonoBehaviour
 
     public AnimationClip PlayAnimationAtLocation()
     {
+        AnimationClip animationToPlay;
+
         if (clipsAtLocation.Length > 1)
         {
-            return clipsAtLocation[Random.Range(0, clipsAtLocation.Length)];
+            animationToPlay = AnimationManager.instance.GetRandomAnimation(clipsAtLocation[Random.Range(0, clipsAtLocation.Length)]);
+            return animationToPlay;
         }
         else
         {
-            return clipsAtLocation[0];
+            animationToPlay = AnimationManager.instance.GetRandomAnimation(clipsAtLocation[0]);
+            return animationToPlay;
         }
     }
 

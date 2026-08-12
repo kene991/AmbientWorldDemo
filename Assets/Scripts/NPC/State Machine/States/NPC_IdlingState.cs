@@ -17,22 +17,14 @@ public class NPC_IdlingState : NPCBaseState
             // I stopped to interact with something
             if (state.Interaction.currentInteractionObject)
             {
-                state.StopNPC(false);
-                state.Obstacle.enabled = true;
-                state.OrientToPosition(state.Interaction.CurrentSlot.interactionMarker);
-                state.Interaction.isAtInteractionMarker = true;
-
-                //can call any interaction state
-                if (state.Interaction.currentInteractionObject.TryGetComponent<InteractionAction>(out var actionZone))
-                    actionZone.OnInteractionStart(state.Interaction);
-
+                state.OnStateSwitch(state.useInteractionActionState);
+                return;
             }
-            else
-            {
-                // or should I continue free roaming
-                state.UpdateNodePath();
-            }
+
+            // or should I continue free roaming
+            state.UpdateNodePath();
         }
+           
 
         // do I currently have a task?
         if (state.Routine.currentTaskLocation != null)

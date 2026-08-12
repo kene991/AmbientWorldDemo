@@ -63,7 +63,8 @@ public class InteractionActionObject : InteractionAction
 
         AttachObjectToBone(actionObjectRole, actionObjectRole.slot.occupant);
         actionObjectRole.slot.OnInteractionStart.Invoke();
-        actionObjectRole.slot.occupant.GetNPCStateMachine().ReplaceAnimationClip(actionObjectRole.slot.occupant.CurrentSlot.interactionClip, "_Interact");
+        actionObjectRole.slot.occupant.GetNPCStateMachine().ReplaceAnimationClip
+            (AnimationManager.instance.GetRandomAnimation(actionObjectRole.slot.occupant.CurrentSlot.interaction), "_Interact");
         actionObjectRole.slot.occupant.GetNPCStateMachine().Animator.SetTrigger("SetInteraction");
     }
 

@@ -14,14 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skyLighting:
     serializedVersion: 2
-    key0: {r: 0, g: 0, b: 0, a: 1}
-    key1: {r: 0.00070195395, g: 0, b: 1, a: 1}
-    key2: {r: 1, g: 0.752216, b: 0.2971698, a: 0}
-    key3: {r: 1, g: 1, b: 1, a: 0}
-    key4: {r: 1, g: 0.9722139, b: 0.92105216, a: 0}
-    key5: {r: 1, g: 0.7529412, b: 0.29803923, a: 0}
-    key6: {r: 0.00126791, g: 0, b: 1, a: 0}
-    key7: {r: 0, g: 0, b: 0, a: 0}
+    key0: {r: 0.18039216, g: 0.18039216, b: 0.18039216, a: 1}
+    key1: {r: 0.3962264, g: 0.3962264, b: 0.3962264, a: 1}
+    key2: {r: 0.52772343, g: 0.54193795, b: 0.5566038, a: 0}
+    key3: {r: 0.5294118, g: 0.5411765, b: 0.5568628, a: 0}
+    key4: {r: 0.5294118, g: 0.5411765, b: 0.5568628, a: 0}
+    key5: {r: 0.5294118, g: 0.5411765, b: 0.5568628, a: 0}
+    key6: {r: 0.5294118, g: 0.5411765, b: 0.5568628, a: 0}
+    key7: {r: 0.18039216, g: 0.18039216, b: 0.18039216, a: 0}
     ctime0: 6554
     ctime1: 13107
     ctime2: 19661
@@ -45,12 +45,12 @@ MonoBehaviour:
   sky:
     serializedVersion: 2
     key0: {r: 0.18039216, g: 0.18039216, b: 0.18039216, a: 1}
-    key1: {r: 0.003921569, g: 0.2784314, b: 0.7137255, a: 1}
-    key2: {r: 0.49803922, g: 0.74509805, b: 1, a: 0}
-    key3: {r: 0.49803922, g: 0.74509805, b: 1, a: 0}
-    key4: {r: 0.49803922, g: 0.74509805, b: 1, a: 0}
-    key5: {r: 0.49803922, g: 0.74509805, b: 1, a: 0}
-    key6: {r: 0.003921569, g: 0.2784314, b: 0.7137255, a: 0}
+    key1: {r: 0.3962264, g: 0.3962264, b: 0.3962264, a: 1}
+    key2: {r: 0.52772343, g: 0.54193795, b: 0.5566038, a: 0}
+    key3: {r: 0.5294118, g: 0.5411765, b: 0.5568628, a: 0}
+    key4: {r: 0.5294118, g: 0.5411765, b: 0.5568628, a: 0}
+    key5: {r: 0.5294118, g: 0.5411765, b: 0.5568628, a: 0}
+    key6: {r: 0.5294118, g: 0.5411765, b: 0.5568628, a: 0}
     key7: {r: 0.18039216, g: 0.18039216, b: 0.18039216, a: 0}
     ctime0: 6554
     ctime1: 13107
@@ -74,14 +74,14 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   equator:
     serializedVersion: 2
-    key0: {r: 0.23529412, g: 0.23529412, b: 0.23529412, a: 1}
-    key1: {r: 0, g: 0.4862745, b: 0.9019608, a: 1}
-    key2: {r: 1, g: 0.74509805, b: 0, a: 0}
-    key3: {r: 0.6862745, g: 0.9490196, b: 0.9607843, a: 0}
-    key4: {r: 0.6862745, g: 0.9490196, b: 0.9607843, a: 0}
-    key5: {r: 1, g: 0.74509805, b: 0, a: 0}
-    key6: {r: 0, g: 0.4862745, b: 0.9019608, a: 0}
-    key7: {r: 0.23529412, g: 0.23529412, b: 0.23529412, a: 0}
+    key0: {r: 0.18039216, g: 0.18039216, b: 0.18039216, a: 1}
+    key1: {r: 0.3962264, g: 0.3962264, b: 0.3962264, a: 1}
+    key2: {r: 0.52772343, g: 0.54193795, b: 0.5566038, a: 0}
+    key3: {r: 0.5294118, g: 0.5411765, b: 0.5568628, a: 0}
+    key4: {r: 0.5294118, g: 0.5411765, b: 0.5568628, a: 0}
+    key5: {r: 0.5294118, g: 0.5411765, b: 0.5568628, a: 0}
+    key6: {r: 0.5294118, g: 0.5411765, b: 0.5568628, a: 0}
+    key7: {r: 0.18039216, g: 0.18039216, b: 0.18039216, a: 0}
     ctime0: 6554
     ctime1: 13107
     ctime2: 19661
@@ -104,14 +104,14 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   ground:
     serializedVersion: 2
-    key0: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 1}
-    key1: {r: 0.7294118, g: 0.72156864, b: 0.7411765, a: 1}
-    key2: {r: 0.78431374, g: 0.8862745, b: 0.35686275, a: 0}
-    key3: {r: 1, g: 1, b: 1, a: 0}
-    key4: {r: 1, g: 1, b: 1, a: 0}
-    key5: {r: 0.78431374, g: 0.8862745, b: 0.35686275, a: 0}
-    key6: {r: 0.7294118, g: 0.72156864, b: 0.7411765, a: 0}
-    key7: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 0}
+    key0: {r: 0.18039216, g: 0.18039216, b: 0.18039216, a: 1}
+    key1: {r: 0.3962264, g: 0.3962264, b: 0.3962264, a: 1}
+    key2: {r: 0.52772343, g: 0.54193795, b: 0.5566038, a: 0}
+    key3: {r: 0.5294118, g: 0.5411765, b: 0.5568628, a: 0}
+    key4: {r: 0.5294118, g: 0.5411765, b: 0.5568628, a: 0}
+    key5: {r: 0.5294118, g: 0.5411765, b: 0.5568628, a: 0}
+    key6: {r: 0.5294118, g: 0.5411765, b: 0.5568628, a: 0}
+    key7: {r: 0.18039216, g: 0.18039216, b: 0.18039216, a: 0}
     ctime0: 6554
     ctime1: 13107
     ctime2: 19661
@@ -132,9 +132,9 @@ MonoBehaviour:
     m_ColorSpace: -1
     m_NumColorKeys: 8
     m_NumAlphaKeys: 2
-  enableRain: 0
-  startTimespanForRain: 0
-  endTimespanForRain: 0
+  enableRain: 1
+  startTimespanForRain: 17
+  endTimespanForRain: 5
   starHeightMask:
     serializedVersion: 2
     m_Curve: []
@@ -143,7 +143,34 @@ MonoBehaviour:
     m_RotationOrder: 4
   cloudHeightMask:
     serializedVersion: 2
-    m_Curve: []
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.5
+      value: 2
+      inSlope: 0.013032675
+      outSlope: 0.013032675
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -2.0474727
+      outSlope: -2.0474727
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.0411247
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4

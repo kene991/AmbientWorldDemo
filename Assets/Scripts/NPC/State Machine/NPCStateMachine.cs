@@ -16,6 +16,7 @@ public class NPCStateMachine : MonoBehaviour
     public NPCBaseState currentState;
     public NPC_IdlingState idleState;
     public NPC_MovingState movingState;
+    public NPC_UseInteractionActionState useInteractionActionState;
 
     private AnimatorOverrideController overrideController;
     public AnimatorOverrideController AnimatorOverrideController { get { return overrideController; } set {  overrideController = value; } }
@@ -59,6 +60,7 @@ public class NPCStateMachine : MonoBehaviour
     {
         idleState = new NPC_IdlingState(this);
         movingState = new NPC_MovingState(this);
+        useInteractionActionState = new NPC_UseInteractionActionState(this);
 
         currentState = idleState;
         currentState.IntializeState(currentState);
