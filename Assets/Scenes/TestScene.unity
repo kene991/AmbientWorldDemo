@@ -2090,7 +2090,7 @@ MonoBehaviour:
       occupant: {fileID: 0}
       roleName: Singer
       interactionMarker: {fileID: 1746177024}
-      interactionAnimation: 0
+      interactionAnimation: 19
       requiredSeated: 0
       OnInteractionStart:
         m_PersistentCalls:
