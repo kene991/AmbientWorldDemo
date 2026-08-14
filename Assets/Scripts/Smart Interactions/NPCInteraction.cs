@@ -29,17 +29,22 @@ public class NPCInteraction : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        UpdateCooldownInteraction();
+    }
+
+    private void UpdateCooldownInteraction()
+    {
         if (interactionCooldownTime > 0f)
         {
             canInteract = false;
             interactionCooldownTime -= Time.deltaTime;
             interactionCooldownTime = Mathf.Max(0f, interactionCooldownTime);
+        }
 
-            if (interactionCooldownTime <= 0f)
-            {
-                interactionCooldownTime = 0f;
-                canInteract = true;
-            }
+        if (interactionCooldownTime <= 0f)
+        {
+            interactionCooldownTime = 0f;
+            canInteract = true;
         }
     }
 
@@ -63,8 +68,12 @@ public class NPCInteraction : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+
         if (other.TryGetComponent(out InteractionAction interaction))
         {
+            if (currentInteractionObject)
+                return;
+
             if (!canInteract || !NPCRoutine.IsInFreeTime)
                 return;
 

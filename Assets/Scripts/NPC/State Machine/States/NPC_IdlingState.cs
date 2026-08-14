@@ -76,8 +76,6 @@ public class NPC_IdlingState : NPCBaseState
 
     public override void UpdateState(NPCStateMachine state)
     {
-
-        ///plan to track via velocity for better accuratcy 
         if (Mathf.Abs(_npc.Agent.velocity.sqrMagnitude) > 0.05f)
         {
             _npc.OnStateSwitch(_npc.movingState);

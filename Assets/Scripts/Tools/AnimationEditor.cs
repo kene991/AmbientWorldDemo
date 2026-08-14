@@ -7,12 +7,6 @@ using UnityEngine.Rendering.Universal.Internal;
 public class AnimationEditor : Editor
 {
     SerializedProperty behaviorAnimations;
-
-    private void OnEnable()
-    {
-        
-    }
-
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();

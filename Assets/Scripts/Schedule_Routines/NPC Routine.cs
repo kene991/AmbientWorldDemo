@@ -89,7 +89,7 @@ public class NPCRoutine : MonoBehaviour
 
             if (NPCInteraction.currentInteractionObject)
             {
-                // if npcs are interacting with smartobject, it has to be cancelled
+                // if npcs are interacting with smartobject, it has to be interuptted
                 if (NPCInteraction.currentInteractionObject.TryGetComponent<InteractionAction>(out var actionZone))
                     actionZone.OnInteractionEnd(NPCInteraction);
             }

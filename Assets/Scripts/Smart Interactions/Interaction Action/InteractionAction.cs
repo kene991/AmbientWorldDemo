@@ -14,10 +14,10 @@ public abstract class InteractionAction : MonoBehaviour
         [HideInInspector] public NPCInteraction occupant;
         public string roleName;
         public Transform interactionMarker;
-        public AnimationType interaction;
+        public AnimationType interactionAnimation;
 
         [Header("Seated")]
-        public bool isSeated;
+        public bool requiredSeated;
 
         [Header("Role Events")]
         public UnityEvent OnInteractionStart;
@@ -45,6 +45,7 @@ public abstract class InteractionAction : MonoBehaviour
 
     public abstract void OnInteractionStart(NPCInteraction npc);
     public abstract void OnInteractionEnd(NPCInteraction npc);
+
 
     // basically conditions (world and npc influenced conditions for the interaction object to be interactable)
     public virtual bool CanInteract(NPCInteraction npc)

@@ -64,12 +64,13 @@ public class InteractionActionObject : InteractionAction
         AttachObjectToBone(actionObjectRole, actionObjectRole.slot.occupant);
         actionObjectRole.slot.OnInteractionStart.Invoke();
         actionObjectRole.slot.occupant.GetNPCStateMachine().ReplaceAnimationClip
-            (AnimationManager.instance.GetRandomAnimation(actionObjectRole.slot.occupant.CurrentSlot.interaction), "_Interact");
+            (AnimationManager.instance.GetRandomAnimation(actionObjectRole.slot.occupant.CurrentSlot.interactionAnimation), "_Interact");
         actionObjectRole.slot.occupant.GetNPCStateMachine().Animator.SetTrigger("SetInteraction");
     }
 
     public void EndObjectInteraction()
     {
+        actionObjectRole.slot.occupant.GetNPCStateMachine().Obstacle.enabled = false;
         actionObjectRole.actionObject.transform.SetParent(null);
         actionObjectRole.slot.OnInteractionEnd.Invoke();
         ReleaseSlot(actionObjectRole.slot.occupant, actionObjectRole.slot);

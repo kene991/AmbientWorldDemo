@@ -85,6 +85,13 @@ public class NPCStateMachine : MonoBehaviour
         StartCoroutine(stateCoroutine);
     }
 
+    public IEnumerator RunCoroutineBeforeNextState(IEnumerator stateCoroutine, NPCBaseState npc)
+    {
+        yield return stateCoroutine;
+
+        OnStateSwitch(npc);
+    }
+
     public void StopNPC(bool includeNavMeshComponent = true)
     {
         Agent.enabled = includeNavMeshComponent;

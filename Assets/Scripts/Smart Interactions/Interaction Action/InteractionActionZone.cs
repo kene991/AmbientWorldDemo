@@ -54,7 +54,7 @@ public class InteractionActionZone : InteractionAction
             return;
 
         npc.GetNPCStateMachine().ReplaceAnimationClip
-            (AnimationManager.instance.GetRandomAnimation(npc.CurrentSlot.interaction), "_Interact");
+            (AnimationManager.instance.GetRandomAnimation(npc.CurrentSlot.interactionAnimation), "_Interact");
 
         npc.GetNPCStateMachine().Animator.SetTrigger("SetInteraction");
         npc.CurrentSlot.OnInteractionStart.Invoke();
