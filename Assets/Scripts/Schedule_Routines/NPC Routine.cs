@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 
 public class NPCRoutine : MonoBehaviour
@@ -28,29 +29,27 @@ public class NPCRoutine : MonoBehaviour
         NPCInteraction = GetComponent<NPCInteraction>();
     }
 
-    private void Start()
+    public void Start()
     {
-        UpdateRoutine(true);
+        UpdateRoutine(0);
     }
 
-    private void Update()
+    private void OnEnable()
     {
-        UpdateRoutine();
+        GameClockManager.Instance.OnHourChanged += UpdateRoutine;
     }
 
-    private void UpdateRoutine(bool forceUpdate = false)
+    private void OnDisable()
     {
-        if (!GameClockManager.Instance)
-            return;
+        GameClockManager.Instance.OnHourChanged -= UpdateRoutine;
+    }
 
-        int currentHour = GameClockManager.Instance.GetTimeSpanned;
-
-        // Only skip if we're NOT forcing an update
-        // AND the hour hasn't changed.
-        if (!forceUpdate && currentHour == _intervalTime)
-            return;
-
-        _intervalTime = currentHour;
+    private void UpdateRoutine(int currentHour)
+    {
+        if (WeatherManager.instance.isRaining)
+            _agentMachine.UpdateWalkSpeed(_agentMachine.MaxSpeed);
+        else
+            _agentMachine.UpdateWalkSpeed(_agentMachine.MaxSpeed / 2);
 
         if (routineSchedule != null)
         {
@@ -62,19 +61,22 @@ public class NPCRoutine : MonoBehaviour
 
             currentRoutineBlock = newBlock;
 
-            isInFreeTime = (currentRoutineBlock == null);
-            OnRoutineChanged();
-        }
-        else
-        {
-            // so it doesn't get called again when hour updates
-            if (IsInFreeTime == true)
-                return;
-
-            IsInFreeTime = true;
-            HandleFreeTime();
+            if (currentTaskLocation)
+            {
+                IsInTaskLocation = false;
+                currentTaskLocation.OnNPCExit(_agentMachine);
+                currentTaskLocation = null;
+            }
         }
 
+        bool stillInFreeTime = isInFreeTime;
+
+        isInFreeTime = (currentRoutineBlock == null || routineSchedule == null);
+
+        if (stillInFreeTime == isInFreeTime)
+            return;
+
+        OnRoutineChanged();
     }
 
     private void OnRoutineChanged()
@@ -82,26 +84,18 @@ public class NPCRoutine : MonoBehaviour
         // based on a free-time activity do either of these
         if (isInFreeTime)
         {
-            HandleFreeTime();
+            EnterFreeTime();
+            return;
         }
-        else
+
+        if (NPCInteraction.currentInteractionObject)
         {
-
-            if (NPCInteraction.currentInteractionObject)
-            {
-                // if npcs are interacting with smartobject, it has to be interuptted
-                if (NPCInteraction.currentInteractionObject.TryGetComponent<InteractionAction>(out var actionZone))
-                    actionZone.OnInteractionEnd(NPCInteraction);
-            }
-
-            //go to the location set on their current routine block
-            _agentMachine.currentPathNode = null;
-            GoToTaskLocation(locationManager.GetLocation(currentRoutineBlock.destinationID));
+            // if npcs are interacting with smartobject, it has to be interuptted
+            NPCInteraction.currentInteractionObject.OnInteractionEnd(NPCInteraction);
         }
-
     }
 
-    private void HandleFreeTime()
+    private void EnterFreeTime()
     {
         //exit routine task location if npc has one
         if (currentTaskLocation)
@@ -113,24 +107,14 @@ public class NPCRoutine : MonoBehaviour
 
         //set agent back to active on
         _agentMachine.NPCModel.SetActive(true);
-
         _agentMachine.UpdateNodePath();
     }
 
     public void GoToTaskLocation(Location location)
     {
-        IsInTaskLocation = false;
+        currentTaskLocation = location; 
 
-        if (currentTaskLocation != null)
-        {
-            currentTaskLocation.OnNPCExit(_agentMachine);
-            currentTaskLocation = null;
-        }
-
-        currentTaskLocation = location;
         _agentMachine.Agent.ResetPath();
         _agentMachine.MoveToPosition(currentTaskLocation.entryPoint.position);
     }
-
-   
 }

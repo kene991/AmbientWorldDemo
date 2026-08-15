@@ -133,8 +133,8 @@ MonoBehaviour:
     m_NumColorKeys: 8
     m_NumAlphaKeys: 2
   enableRain: 1
-  startTimespanForRain: 17
-  endTimespanForRain: 5
+  startTimespanForRain: 6
+  endTimespanForRain: 20
   starHeightMask:
     serializedVersion: 2
     m_Curve: []

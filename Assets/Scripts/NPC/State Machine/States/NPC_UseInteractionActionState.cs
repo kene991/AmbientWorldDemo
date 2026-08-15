@@ -26,7 +26,8 @@ public class NPC_UseInteractionActionState : NPCBaseState
 
     public override void ExitState(NPCStateMachine state)
     {
-        
+        _interactionTimer = 0;
+        _timerActive = false;
     }
 
     public override void OnCollisionEnter(NPCStateMachine state, Collision collide)

@@ -29,6 +29,7 @@ public class GameClockManager : MonoBehaviour
     float elaspedTime;
     TimeSpan timeSpan;
     int h;
+    int previousHour = -1;
 
     private void Awake()
     {
@@ -47,7 +48,21 @@ public class GameClockManager : MonoBehaviour
         //using TimeSpan from the Systems library to format the time.
         timeSpan = TimeSpan.FromSeconds(elaspedTime);
         currentTime = DisplayTime();
+        CheckForTimeChange();
         UpdateTimeOfDay();
+    }
+
+    private void CheckForTimeChange()
+    {
+        int currentHour = timeSpan.Hours;
+
+        if (currentHour != previousHour)
+        {
+            previousHour = currentHour;
+
+            Debug.Log("Time has updated!");
+            OnHourChanged?.Invoke(currentHour);
+        }
     }
 
     /// <summary>

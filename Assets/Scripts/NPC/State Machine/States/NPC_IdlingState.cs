@@ -1,13 +1,13 @@
 using System.Runtime.InteropServices.ComTypes;
 using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class NPC_IdlingState : NPCBaseState
 {
     public NPC_IdlingState(NPCStateMachine context) : base(context)
     {
     }
-
 
     public override void EnterState(NPCStateMachine state)
     {
@@ -23,36 +23,11 @@ public class NPC_IdlingState : NPCBaseState
 
             // or should I continue free roaming
             state.UpdateNodePath();
+            return;
         }
-           
 
-        // do I currently have a task?
-        if (state.Routine.currentTaskLocation != null)
-        {
-            if (!state.Routine.IsInTaskLocation)
-            {
-                state.Routine.currentTaskLocation.OnNPCEnter(state);
-            }
+         IntializeRoutineEntry(state.Routine);
 
-            // if the task location is an area (park, beach, playground, etc.)
-            if (!state.NPCModel.activeSelf)
-                return;
-
-            if (state.Routine.currentTaskLocation.isArea)
-            {
-                if (!state.Routine.IsInTaskLocation)
-                {
-                    state.Routine.IsInTaskLocation = true;
-                    Vector3 randomPoint = state.Routine.currentTaskLocation.GetRandomPointInArea();
-                    state.MoveToPosition(randomPoint);
-                    return;
-                }
-
-                state.ReplaceAnimationClip(state.Routine.currentTaskLocation.PlayAnimationAtLocation(), "_Routine");
-                state.Animator.SetTrigger("SetRoutine");
-            }
-        }
-       
     }
 
     public override void IntializeState(NPCBaseState state)
@@ -80,6 +55,48 @@ public class NPC_IdlingState : NPCBaseState
         {
             _npc.OnStateSwitch(_npc.movingState);
         }
+    }
+
+    private void IntializeRoutineEntry(NPCRoutine routine)
+    {
+        if (routine.currentRoutineBlock == null)
+            return;
+
+        if (!routine.currentTaskLocation)
+        {
+            routine.GoToTaskLocation(LocationManager.instance.GetLocation(routine.currentRoutineBlock.destinationID));
+            return;
+        }
+
+        if (!routine.currentTaskLocation.isArea)
+        {
+            // do I currently have a task? and I ain't there??
+            if (!routine.IsInTaskLocation)
+            {
+                _npc.currentPathNode = null;
+                routine.IsInTaskLocation = true;
+                routine.currentTaskLocation.OnNPCEnter(_npc);
+                return;
+            }
+        }
+       
+
+        // can I go a random point in this area
+        if (routine.currentTaskLocation.isArea)
+        {
+            //am I at the random point in the area
+            if (!routine.IsInTaskLocation)
+            {
+                Vector3 randomPoint = routine.currentTaskLocation.GetRandomPointInArea();
+                _npc.MoveToPosition(randomPoint);
+                routine.IsInTaskLocation = true;
+                return;
+            }
+
+            _npc.ReplaceAnimationClip(_npc.Routine.currentTaskLocation.PlayAnimationAtLocation(), "_Routine");
+            _npc.Animator.SetTrigger("SetRoutine");
+        }
+
     }
 
 }

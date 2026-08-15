@@ -92,6 +92,7 @@ public class NPCStateMachine : MonoBehaviour
         OnStateSwitch(npc);
     }
 
+    #region Nav Mesh Calls
     public void StopNPC(bool includeNavMeshComponent = true)
     {
         Agent.enabled = includeNavMeshComponent;
@@ -136,6 +137,12 @@ public class NPCStateMachine : MonoBehaviour
         transform.rotation = rot.rotation;
     }
 
+    public void UpdateWalkSpeed(float newSpeed)
+    {
+        _agent.speed = newSpeed;
+    }
+
+    #endregion
     #region Free Roam Nodes
     public PathNode GetClosestNode()
     {
@@ -164,12 +171,12 @@ public class NPCStateMachine : MonoBehaviour
         if (currentPathNode == null)
         {
             currentPathNode = GetClosestNode();
-            MoveToPosition(currentPathNode.transform.position);
+            MoveToPosition(currentPathNode.GetPosition());
             return;
         }
 
         currentPathNode = ChooseNextNode(currentPathNode);
-        MoveToPosition(currentPathNode.transform.position);
+        MoveToPosition(currentPathNode.GetPosition());
     }
 
     private PathNode ChooseNextNode(PathNode node)
@@ -182,7 +189,6 @@ public class NPCStateMachine : MonoBehaviour
         return node.nextWaypoint;
     }
     #endregion
-
     #region Animations
 
     public void ReplaceAnimationClip(AnimationClip animationClip, string overrideClip)

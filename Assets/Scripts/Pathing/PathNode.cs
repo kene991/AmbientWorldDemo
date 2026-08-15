@@ -17,8 +17,14 @@ public class PathNode : MonoBehaviour
     [Range(0f, 3f)]
     public float idleTime = 0f;
 
+    [Range(0f, 5f)]
+    public float width = 1f;
+
     public Vector3 GetPosition()
     {
-        return transform.position;
+        Vector3 minBound = transform.position + transform.right * width / 2f;
+        Vector3 maxBound = transform.position - transform.right * width / 2f;
+
+        return Vector3.Lerp(minBound, maxBound, Random.Range(0, 1f));
     }
 }
