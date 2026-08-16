@@ -19,7 +19,7 @@ public class Location : MonoBehaviour
     public void OnNPCEnter(NPCStateMachine npc)
     {
         npc.NPCModel.SetActive(activeAtEntryPoint);
-        npc.StopNPC();
+        npc.StopNPC(activeAtEntryPoint);
 
         // npcs enter buildings and houses, no need to further the logic!
         if (!npc.NPCModel.activeSelf)
@@ -34,6 +34,10 @@ public class Location : MonoBehaviour
             npc.NPCModel.SetActive(true);
 
         npc.ResumeNPC();
+
+        //refreshing npc
+        if (isArea)
+            npc.UpdateNodePath();
     }
 
     public AnimationClip PlayAnimationAtLocation()

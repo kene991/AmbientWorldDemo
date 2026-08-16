@@ -68,34 +68,24 @@ public class NPC_IdlingState : NPCBaseState
             return;
         }
 
-        if (!routine.currentTaskLocation.isArea)
+        // do I currently have a task? and I ain't there??
+        if (!routine.IsInTaskLocation)
         {
-            // do I currently have a task? and I ain't there??
-            if (!routine.IsInTaskLocation)
-            {
-                _npc.currentPathNode = null;
-                routine.IsInTaskLocation = true;
-                routine.currentTaskLocation.OnNPCEnter(_npc);
-                return;
-            }
-        }
-       
+            _npc.currentPathNode = null;
+            routine.IsInTaskLocation = true;
+            routine.currentTaskLocation.OnNPCEnter(_npc);
 
-        // can I go a random point in this area
-        if (routine.currentTaskLocation.isArea)
-        {
-            //am I at the random point in the area
-            if (!routine.IsInTaskLocation)
+            // can I go a random point in this area
+            if (routine.currentTaskLocation.isArea)
             {
-                Vector3 randomPoint = routine.currentTaskLocation.GetRandomPointInArea();
-                _npc.MoveToPosition(randomPoint);
-                routine.IsInTaskLocation = true;
-                return;
+                _npc.ReplaceAnimationClip(_npc.Routine.currentTaskLocation.PlayAnimationAtLocation(), "_Routine");
+                _npc.Animator.SetTrigger("SetRoutine");
             }
 
-            _npc.ReplaceAnimationClip(_npc.Routine.currentTaskLocation.PlayAnimationAtLocation(), "_Routine");
-            _npc.Animator.SetTrigger("SetRoutine");
+            return;
         }
+
+        
 
     }
 

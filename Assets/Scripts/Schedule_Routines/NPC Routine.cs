@@ -100,9 +100,9 @@ public class NPCRoutine : MonoBehaviour
         //exit routine task location if npc has one
         if (currentTaskLocation)
         {
+            IsInTaskLocation = false;
             currentTaskLocation.OnNPCExit(_agentMachine);
             currentTaskLocation = null;
-            IsInTaskLocation = false;
         }
 
         //set agent back to active on
@@ -115,6 +115,15 @@ public class NPCRoutine : MonoBehaviour
         currentTaskLocation = location; 
 
         _agentMachine.Agent.ResetPath();
-        _agentMachine.MoveToPosition(currentTaskLocation.entryPoint.position);
+
+        if (location.isArea)
+        {
+            _agentMachine.MoveToPosition(currentTaskLocation.GetRandomPointInArea());
+        }
+        else
+        {
+            _agentMachine.MoveToPosition(currentTaskLocation.entryPoint.position);
+        }
+
     }
 }

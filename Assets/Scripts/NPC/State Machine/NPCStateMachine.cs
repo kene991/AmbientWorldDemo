@@ -104,7 +104,11 @@ public class NPCStateMachine : MonoBehaviour
     public void ResumeNPC()
     {
         if (!Agent.enabled)
+        {
             Agent.enabled = true;
+            Agent.Warp(Agent.transform.position);
+        }
+
 
         Agent.isStopped = false;
     }
