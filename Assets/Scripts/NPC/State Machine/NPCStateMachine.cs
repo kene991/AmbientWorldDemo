@@ -92,6 +92,7 @@ public class NPCStateMachine : MonoBehaviour
         OnStateSwitch(npc);
     }
 
+
     #region Nav Mesh Calls
     public void StopNPC(bool includeNavMeshComponent = true)
     {
@@ -188,9 +189,14 @@ public class NPCStateMachine : MonoBehaviour
         if (node.waypointBranches.Count > 0 && Random.value <= node.branchRatio)
         {
             return node.waypointBranches[Random.Range(0, node.waypointBranches.Count)];
+        } 
+        // if you don't have a next way point set, pick the first one in next waypoint
+        else if (node.nextWaypoint == null && node.waypointBranches.Count > 0)
+        {
+            return node.waypointBranches[0];
         }
 
-        return node.nextWaypoint;
+            return node.nextWaypoint;
     }
     #endregion
     #region Animations

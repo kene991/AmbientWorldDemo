@@ -87,12 +87,6 @@ public class NPCRoutine : MonoBehaviour
             EnterFreeTime();
             return;
         }
-
-        if (NPCInteraction.currentInteractionObject)
-        {
-            // if npcs are interacting with smartobject, it has to be interuptted
-            NPCInteraction.currentInteractionObject.OnInteractionEnd(NPCInteraction);
-        }
     }
 
     private void EnterFreeTime()

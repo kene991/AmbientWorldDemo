@@ -50,7 +50,7 @@ public class InteractionActionObject : InteractionAction
 
     public override void ReleaseSlot(NPCInteraction npc, InteractionSlot slot)
     {
-        base.ReleaseSlot(actionObjectRole.slot.occupant, actionObjectRole.slot);
+        base.ReleaseSlot(npc, slot);
     }
 
     public void StartObjectInteraction()

@@ -21,7 +21,7 @@ public class NPC_UseInteractionActionState : NPCBaseState
         _interactionSlot = state.Interaction.CurrentSlot;
 
         if (_interactionCoroutine == null)
-            _interactionCoroutine = state.StartCoroutine(InteractionIntializeRoutine(state));
+            _interactionCoroutine = state.StartCoroutine(InteractionIntializeCoroutine(state));
     }
 
     public override void ExitState(NPCStateMachine state)
@@ -42,10 +42,9 @@ public class NPC_UseInteractionActionState : NPCBaseState
 
     public override void UpdateState(NPCStateMachine state)
     {
-        if (Mathf.Abs(_npc.Agent.velocity.sqrMagnitude) > 0.05f)
+        if (!string.IsNullOrEmpty(state.Routine.currentRoutineBlock.blockName) && _timerActive)
         {
-            ExitInteractionToState(state.movingState);
-            return;
+            ExitInteractionToState(state.idleState);
         }
 
         if (!_interactionAction)
@@ -56,7 +55,7 @@ public class NPC_UseInteractionActionState : NPCBaseState
 
          _interactionTimer -= Time.deltaTime;
 
-        if (_interactionTimer <= 0f && _timerActive)
+        if ((_interactionTimer <= 0f && _timerActive))
         {
             ExitInteractionToState(state.idleState);
         }
@@ -65,9 +64,9 @@ public class NPC_UseInteractionActionState : NPCBaseState
 
     private void ExitInteractionToState(NPCBaseState nextState)
     {
-        _npc.StartCoroutine(_npc.RunCoroutineBeforeNextState(InteractionExitRoutine(_npc), nextState));
+        _npc.StartCoroutine(_npc.RunCoroutineBeforeNextState(InteractionExitCoroutine(_npc), nextState));
     }
-    private IEnumerator InteractionIntializeRoutine(NPCStateMachine state)
+    private IEnumerator InteractionIntializeCoroutine(NPCStateMachine state)
     {
         // intializing 
         state.StopNPC(false);
@@ -80,6 +79,7 @@ public class NPC_UseInteractionActionState : NPCBaseState
         {
             state.Animator.SetTrigger("SetSeated");
             yield return new WaitForSeconds(2f);
+            state.Animator.ResetTrigger("SetSeated");
         }
 
         //can call any interaction state
@@ -88,7 +88,7 @@ public class NPC_UseInteractionActionState : NPCBaseState
         _interactionTimer = _interactionAction.interactionDuration;
         _timerActive = true;
     }
-    private IEnumerator InteractionExitRoutine(NPCStateMachine state)
+    private IEnumerator InteractionExitCoroutine(NPCStateMachine state)
     {
         // Stop the interaction timer
         _timerActive = false;
@@ -103,8 +103,9 @@ public class NPC_UseInteractionActionState : NPCBaseState
         // if seated stand up!
         if (_interactionSlot.requiredSeated)
         {
-             state.Animator.SetTrigger("SetStandUp");
-             yield return new WaitForSeconds(2f);
+            state.Animator.SetTrigger("SetStandUp");
+            yield return new WaitForSeconds(2f);
+            state.Animator.ResetTrigger("SetStandUp");
         }
 
         // NOW release the interaction action (SmartObject)
