@@ -17,7 +17,7 @@ public class NPCInteraction : MonoBehaviour
 
     [Header("Interaction Action Settings")]
     public InteractionAction currentInteractionObject;
-    private InteractionAction.InteractionSlot currentSlot;
+    [HideInInspector] public InteractionAction.InteractionSlot currentSlot;
     public InteractionAction.InteractionSlot CurrentSlot {  get { return currentSlot; } set { currentSlot = value; } }
 
     void Start()
@@ -64,27 +64,6 @@ public class NPCInteraction : MonoBehaviour
     public Transform GetBone(HumanBodyBones bone)
     {
         return NPCStateMachine.Animator.GetBoneTransform(bone);
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-
-        if (other.TryGetComponent(out InteractionAction interaction))
-        {
-            if (currentInteractionObject)
-                return;
-
-            if (!canInteract || !NPCRoutine.IsInFreeTime)
-                return;
-
-            if (!interaction.CanInteract(this))
-                return;
-
-            if(interaction.ReserveSlot(this, out currentSlot))
-            {          
-                NPCStateMachine.MoveToPosition(currentSlot.interactionMarker.position);
-            }
-        }
     }
 
 }

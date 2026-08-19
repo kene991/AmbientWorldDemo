@@ -31,7 +31,22 @@ public class NPC_MovingState : NPCBaseState
 
     public override void OnTriggerEnter(NPCStateMachine state, Collider collide)
     {
-       
+        if (collide.TryGetComponent(out InteractionAction interaction))
+        {
+            if (state.Interaction.currentInteractionObject)
+                return;
+
+            if (!state.Interaction.canInteract || !state.Routine.IsInFreeTime)
+                return;
+
+            if (!interaction.CanInteract(state.Interaction))
+                return;
+
+            if (interaction.ReserveSlot(state.Interaction, out state.Interaction.currentSlot))
+            {
+                state.MoveToPosition(state.Interaction.CurrentSlot.interactionMarker.position);
+            }
+        }
     }
 
     public override void UpdateState(NPCStateMachine state)

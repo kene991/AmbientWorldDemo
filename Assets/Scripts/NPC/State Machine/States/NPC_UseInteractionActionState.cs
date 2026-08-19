@@ -42,7 +42,7 @@ public class NPC_UseInteractionActionState : NPCBaseState
 
     public override void UpdateState(NPCStateMachine state)
     {
-        if (!string.IsNullOrEmpty(state.Routine.currentRoutineBlock.blockName) && _timerActive)
+        if (!state.Routine.IsInFreeTime && _timerActive)
         {
             ExitInteractionToState(state.idleState);
         }

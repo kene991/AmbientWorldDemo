@@ -59,7 +59,7 @@ public class NPC_IdlingState : NPCBaseState
 
     private void IntializeRoutineEntry(NPCRoutine routine)
     {
-        if (routine.currentRoutineBlock.blockName == string.Empty)
+         if (routine.currentRoutineBlock.blockName == string.Empty)
             return;
 
         if (!routine.currentTaskLocation)

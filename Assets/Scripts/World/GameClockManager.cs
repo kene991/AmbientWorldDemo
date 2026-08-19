@@ -34,6 +34,12 @@ public class GameClockManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+
+
+        int randomHour = UnityEngine.Random.Range(0, 22);
+        int randomMinute = UnityEngine.Random.Range(0, 60);
+
+        elaspedTime = (randomHour * 3600) + (randomMinute * 60);
     }
 
     private void Update()

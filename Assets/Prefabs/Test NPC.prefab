@@ -329,7 +329,8 @@ GameObject:
   - component: {fileID: 2876819381732851531}
   - component: {fileID: 4536327387243136471}
   - component: {fileID: 3370952106525084845}
-  m_Layer: 0
+  - component: {fileID: 1809829103322002647}
+  m_Layer: 3
   m_Name: Test NPC
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -379,7 +380,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6c40328f687f4f44951007a159f69c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPCRoutine
-  locationManager: {fileID: 0}
   IsInTaskLocation: 0
   currentTaskLocation: {fileID: 0}
   isInFreeTime: 0
@@ -403,10 +403,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NPCInteraction
   interactableTags:
   - sports car
+  - singer
+  - chair
   interactionCooldownTime: 0
   isAtInteractionMarker: 0
   canInteract: 1
   currentInteractionObject: {fileID: 0}
+  currentSlot:
+    occupant: {fileID: 0}
+    roleName: 
+    interactionMarker: {fileID: 0}
+    interactionAnimation: 0
+    requiredSeated: 0
+    OnInteractionStart:
+      m_PersistentCalls:
+        m_Calls: []
+    OnInteractionEnd:
+      m_PersistentCalls:
+        m_Calls: []
 --- !u!195 &499183976794831889
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -464,7 +478,7 @@ CapsuleCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
@@ -490,6 +504,33 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 1, z: 0}
   m_TimeToStationary: 0.5
+--- !u!54 &1809829103322002647
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 490084261460884511}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &774002847490716934
 GameObject:
   m_ObjectHideFlags: 0

@@ -41,6 +41,7 @@ public class WeatherManager : MonoBehaviour
     void Start()
     {
         _skybox = new Material(_skybox);
+        UpdateForcast(_clockManager.GetTimeSpanned);
     }
 
     // Update is called once per frame
@@ -75,17 +76,22 @@ public class WeatherManager : MonoBehaviour
 
     private void ApplyCycleMaterialUpdate()
     {
+        float normalizedTime = Mathf.Clamp01((float)_clockManager.GetTimeSpanned / duration);
+
         directionalLight.color = EvaluateTimeSpanColor(debugForcast.skyLighting);
         _skybox.SetColor("_SkyColor", EvaluateTimeSpanColor(debugForcast.sky));
         _skybox.SetColor("_EquatorColor", EvaluateTimeSpanColor(debugForcast.equator));
         _skybox.SetColor("_GroundColor", EvaluateTimeSpanColor(debugForcast.ground));
 
-        _skybox.SetFloat("_StarsHeightMask", debugForcast.starHeightMask.Evaluate((float)_clockManager.GetTimeSpanned / duration));
-        _skybox.SetFloat("_CloudsHeight", debugForcast.cloudHeightMask.Evaluate((float)_clockManager.GetTimeSpanned / duration));
+        _skybox.SetFloat("_StarsHeightMask", debugForcast.starHeightMask.Evaluate(normalizedTime));
+        _skybox.SetFloat("_CloudsHeight", debugForcast.cloudHeightMask.Evaluate(normalizedTime));
     }
 
     private void ShouldRain(int hour)
     {
+        if (!debugForcast.enableRain)
+            return;
+
         SetRain(IsWithinRainTimeSpan(hour));
     }
 
@@ -114,7 +120,7 @@ public class WeatherManager : MonoBehaviour
 
     private Color EvaluateTimeSpanColor(Gradient color)
     {
-        return color.Evaluate((float)_clockManager.GetTimeSpanned / duration);
+        return color.Evaluate(Mathf.Clamp01((float)_clockManager.GetTimeSpanned / duration));
     }
 
     private bool IsWithinRainTimeSpan(float currentTime)

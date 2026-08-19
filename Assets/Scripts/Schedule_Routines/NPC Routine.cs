@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 public class NPCRoutine : MonoBehaviour
 {
-    [SerializeField] private LocationManager locationManager;
     private NPCStateMachine _agentMachine;
     private NPCInteraction NPCInteraction;
     private int _intervalTime;
@@ -29,11 +28,6 @@ public class NPCRoutine : MonoBehaviour
         NPCInteraction = GetComponent<NPCInteraction>();
     }
 
-    public void Start()
-    {
-        UpdateRoutine(0);
-    }
-
     private void OnEnable()
     {
         GameClockManager.Instance.OnHourChanged += UpdateRoutine;
@@ -44,7 +38,7 @@ public class NPCRoutine : MonoBehaviour
         GameClockManager.Instance.OnHourChanged -= UpdateRoutine;
     }
 
-    private void UpdateRoutine(int currentHour)
+    public void UpdateRoutine(int currentHour)
     {
         if (WeatherManager.instance.isRaining)
             _agentMachine.UpdateWalkSpeed(_agentMachine.MaxSpeed);
