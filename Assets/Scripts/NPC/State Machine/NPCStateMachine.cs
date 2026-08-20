@@ -72,6 +72,9 @@ public class NPCStateMachine : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
+        if (other.gameObject.GetComponent<NPCStateMachine>())
+            return;
+
         currentState.OnTriggerEnter(this, other);
     }
     public void OnStateSwitch(NPCBaseState state)

@@ -3004,9 +3004,16 @@ MonoBehaviour:
     - {fileID: 7400000, guid: 6adc972a97a4c5747a0b3db9adbf5e85, type: 2}
   - animationType: 43
     clips:
+    - {fileID: 7400000, guid: 6348d333c40fab54e918a255a5c07100, type: 2}
+    - {fileID: 7400000, guid: 40fdab8f6a1c75b468bfb2197b4a76ce, type: 2}
+    - {fileID: 7400000, guid: 82dd43fc8f9bea14ea3d1218f75d105b, type: 2}
+    - {fileID: 7400000, guid: b1bd3163b8c01d4459ba6314cbf092ab, type: 2}
+    - {fileID: 7400000, guid: 6929cbe5ebd126948bbde5ee80daba7a, type: 2}
     - {fileID: 7400000, guid: fd1d7d5c1cd7eff42a7ef34292599129, type: 2}
     - {fileID: 7400000, guid: 0d86881fe3666bb479a2ac5644e5f096, type: 2}
     - {fileID: 7400000, guid: a2981954761fa074ba4a1195590fcd41, type: 2}
+    - {fileID: 7400000, guid: 0b127db63db86cc44b1f306671e50187, type: 2}
+    - {fileID: 7400000, guid: e180e01cbbfec0b489e406ae028e4f78, type: 2}
   - animationType: 44
     clips:
     - {fileID: 7400000, guid: fe36393219ea4ad4482a1ab6c9662fd3, type: 2}
