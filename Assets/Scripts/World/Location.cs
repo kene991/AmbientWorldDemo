@@ -1,3 +1,6 @@
+using JetBrains.Annotations;
+using System;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -46,7 +49,7 @@ public class Location : MonoBehaviour
 
         if (clipsAtLocation.Length > 1)
         {
-            animationToPlay = AnimationManager.instance.GetRandomAnimation(clipsAtLocation[Random.Range(0, clipsAtLocation.Length)]);
+            animationToPlay = AnimationManager.instance.GetRandomAnimation(clipsAtLocation[UnityEngine.Random.Range(0, clipsAtLocation.Length)]);
             return animationToPlay;
         }
         else
@@ -60,7 +63,7 @@ public class Location : MonoBehaviour
     {
         for (int i = 0; i < 10; i++)
         {
-            Vector2 random = Random.insideUnitCircle * areaRadius;
+            Vector2 random = UnityEngine.Random.insideUnitCircle * areaRadius;
             Vector3 point = areaCenter.position + new Vector3(random.x, 0f, random.y);
 
             if (NavMesh.SamplePosition(point, out NavMeshHit hit, 2f, NavMesh.AllAreas))
@@ -78,4 +81,43 @@ public class Location : MonoBehaviour
             Gizmos.DrawWireSphere(areaCenter.transform.position, areaRadius);
         }
     }
+}
+
+[CustomEditor(typeof(Location))]
+public class LocationEditor : Editor
+{
+    public override void OnInspectorGUI()
+    {
+        Location location = (Location)target;
+
+        base.OnInspectorGUI();
+
+        GUILayout.Space(10);
+
+        if (GUILayout.Button("Generate ID"))
+        {
+
+            location.locationID = GenerateID();
+
+            serializedObject.ApplyModifiedProperties();
+        }
+        
+    }
+
+    int GenerateID()
+    {
+        int[] availableDigits = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+        int[] id = new int[] { 0, 0, 0, 0 };
+
+        id[0] = availableDigits[UnityEngine.Random.Range(0, availableDigits.Length)];
+        id[1] = availableDigits[UnityEngine.Random.Range(0, availableDigits.Length)];
+        id[2] = availableDigits[UnityEngine.Random.Range(0, availableDigits.Length)];
+        id[3] = availableDigits[UnityEngine.Random.Range(0, availableDigits.Length)];
+
+
+        var finalID = int.Parse(string.Concat(id));
+
+        return finalID;
+    }
+
 }
