@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Location : MonoBehaviour
+public class GoalLocation : MonoBehaviour
 {
     public string locationName;
     public int locationID;
@@ -83,12 +83,12 @@ public class Location : MonoBehaviour
     }
 }
 
-[CustomEditor(typeof(Location))]
+[CustomEditor(typeof(GoalLocation))]
 public class LocationEditor : Editor
 {
     public override void OnInspectorGUI()
     {
-        Location location = (Location)target;
+        GoalLocation location = (GoalLocation)target;
 
         base.OnInspectorGUI();
 

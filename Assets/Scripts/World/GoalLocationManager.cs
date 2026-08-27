@@ -1,16 +1,16 @@
 using UnityEngine;
 
-public class LocationManager : MonoBehaviour
+public class GoalLocationManager : MonoBehaviour
 {
-    public static LocationManager instance;
-    public Location[] availableLocations;
+    public static GoalLocationManager instance;
+    public GoalLocation[] availableLocations;
 
     private void Awake()
     {
         instance = this;
     }
 
-    public Location GetLocation(int ID)
+    public GoalLocation GetLocation(int ID)
     {
         foreach (var item in availableLocations)
         {

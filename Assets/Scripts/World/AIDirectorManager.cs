@@ -45,7 +45,7 @@ public class AIDirectorManager : MonoBehaviour
 
         NPCStateMachine npc = Instantiate(npcPrefab[Random.Range(0, npcPrefab.Length)], spawnPosition, Quaternion.identity);
 
-        if (Random.value > 0.5f)
+        if (Random.value > 0.5f && routinesToGive.Length > 0)
         {
             npc.Routine.routineSchedule = routinesToGive[Random.Range(0, routinesToGive.Length)];
 
@@ -54,8 +54,7 @@ public class AIDirectorManager : MonoBehaviour
         }
            
 
-        
-
+        npc.UpdateNodePath();
 
         activeNPCs.Add(npc);
     }

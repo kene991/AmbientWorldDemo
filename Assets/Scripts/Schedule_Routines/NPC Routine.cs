@@ -6,13 +6,11 @@ using UnityEngine.UI;
 
 public class NPCRoutine : MonoBehaviour
 {
-    private NPCStateMachine _agentMachine;
-    private NPCInteraction NPCInteraction;
-    private int _intervalTime;
+    private NPCStateMachine NPCStateMachine;
 
     [Header("Destination Location")]
     public bool IsInTaskLocation;
-    public Location currentTaskLocation;
+    public GoalLocation currentTaskLocation;
 
     [Header("Activity Settings")]
     [SerializeField] bool isInFreeTime; //if the the npc has free time
@@ -24,8 +22,7 @@ public class NPCRoutine : MonoBehaviour
 
     private void Awake()
     {
-        _agentMachine = GetComponent<NPCStateMachine>();
-        NPCInteraction = GetComponent<NPCInteraction>();
+        NPCStateMachine = GetComponent<NPCStateMachine>();
     }
 
     private void OnEnable()
@@ -41,9 +38,9 @@ public class NPCRoutine : MonoBehaviour
     public void UpdateRoutine(int currentHour)
     {
         if (WeatherManager.instance.isRaining)
-            _agentMachine.UpdateWalkSpeed(_agentMachine.MaxSpeed);
+            NPCStateMachine.UpdateWalkSpeed(NPCStateMachine.MaxSpeed);
         else
-            _agentMachine.UpdateWalkSpeed(_agentMachine.MaxSpeed / 2);
+            NPCStateMachine.UpdateWalkSpeed(NPCStateMachine.MaxSpeed / 2);
 
         if (routineSchedule != null)
         {
@@ -58,7 +55,7 @@ public class NPCRoutine : MonoBehaviour
             if (currentTaskLocation)
             {
                 IsInTaskLocation = false;
-                currentTaskLocation.OnNPCExit(_agentMachine);
+                currentTaskLocation.OnNPCExit(NPCStateMachine);
                 currentTaskLocation = null;
             }
         }
@@ -89,28 +86,28 @@ public class NPCRoutine : MonoBehaviour
         if (currentTaskLocation)
         {
             IsInTaskLocation = false;
-            currentTaskLocation.OnNPCExit(_agentMachine);
+            currentTaskLocation.OnNPCExit(NPCStateMachine);
             currentTaskLocation = null;
         }
 
         //set agent back to active on
-        _agentMachine.NPCModel.SetActive(true);
-        _agentMachine.UpdateNodePath();
+        NPCStateMachine.NPCModel.SetActive(true);
+        NPCStateMachine.UpdateNodePath();
     }
 
-    public void GoToTaskLocation(Location location)
+    public void GoToGoalLocation(GoalLocation location)
     {
         currentTaskLocation = location; 
 
-        _agentMachine.Agent.ResetPath();
+        NPCStateMachine.Agent.ResetPath();
 
         if (location.isArea)
         {
-            _agentMachine.MoveToPosition(currentTaskLocation.GetRandomPointInArea());
+            NPCStateMachine.MoveToPosition(currentTaskLocation.GetRandomPointInArea());
         }
         else
         {
-            _agentMachine.MoveToPosition(currentTaskLocation.entryPoint.position);
+            NPCStateMachine.MoveToPosition(currentTaskLocation.entryPoint.position);
         }
 
     }

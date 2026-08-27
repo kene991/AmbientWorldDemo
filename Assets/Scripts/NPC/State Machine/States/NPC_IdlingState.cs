@@ -64,7 +64,7 @@ public class NPC_IdlingState : NPCBaseState
 
         if (!routine.currentTaskLocation)
         {
-            routine.GoToTaskLocation(LocationManager.instance.GetLocation(routine.currentRoutineBlock.destinationID));
+            routine.GoToGoalLocation(GoalLocationManager.instance.GetLocation(routine.currentRoutineBlock.destinationID));
             return;
         }
 
