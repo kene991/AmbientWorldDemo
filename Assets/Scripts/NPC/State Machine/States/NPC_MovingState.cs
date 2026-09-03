@@ -33,10 +33,13 @@ public class NPC_MovingState : NPCBaseState
     {
         if (collide.TryGetComponent(out InteractionAction interaction))
         {
-            if (state.Interaction.currentInteractionObject)
+            if (!state.Routine.IsInFreeTime)
                 return;
 
-            if (!state.Interaction.canInteract || !state.Routine.IsInFreeTime)
+            if (state.Interaction.currentInteractionState != InteractionState.None)
+                return;
+
+            if (!state.Interaction.canInteract)
                 return;
 
             if (!interaction.CanInteract(state.Interaction))
@@ -45,6 +48,7 @@ public class NPC_MovingState : NPCBaseState
             if (interaction.ReserveSlot(state.Interaction, out state.Interaction.currentSlot))
             {
                 state.MoveToPosition(state.Interaction.CurrentSlot.interactionMarker.position);
+                state.Interaction.currentInteractionState = InteractionState.Reserved;
             }
         }
     }
@@ -55,6 +59,9 @@ public class NPC_MovingState : NPCBaseState
         {
             _npc.Animator.SetFloat("Velocity", Mathf.Clamp01(_npc.Agent.speed/_npc.MaxSpeed));
         }
+
+        if (state.Interaction.currentInteractionState == InteractionState.Reserved)
+            state.Interaction.currentInteractionState = InteractionState.Entering;
 
         if (!state.HasReachedDestination())
             return;

@@ -12,7 +12,8 @@ public class AIDirectorManager : MonoBehaviour
     private List<PathNode> pathNodes = new List<PathNode>();
     private List<NPCStateMachine> activeNPCs = new List<NPCStateMachine>();
 
-    public RoutineSO[] routinesToGive;
+    //for only regular npcs, if no routine is selected.
+    public List<RoutineSO> availableRoutines;
 
     private void Awake()
     {
@@ -45,14 +46,19 @@ public class AIDirectorManager : MonoBehaviour
 
         NPCStateMachine npc = Instantiate(npcPrefab[Random.Range(0, npcPrefab.Length)], spawnPosition, Quaternion.identity);
 
-        if (Random.value > 0.5f && routinesToGive.Length > 0)
+        if (!npc.Routine.routineSchedule)
         {
-            npc.Routine.routineSchedule = routinesToGive[Random.Range(0, routinesToGive.Length)];
+            if (Random.value > 0.5f && availableRoutines.Count > 0)
+            {
+                RoutineSO selectedRoutine = availableRoutines[Random.Range(0, availableRoutines.Count)];
+                npc.Routine.routineSchedule = selectedRoutine;
 
-            //helps capture time which I can now randomize
-            npc.Routine.UpdateRoutine(GameClockManager.Instance.GetTimeSpanned);
-        }
-           
+                //helps capture time which I can now randomize
+                npc.Routine.UpdateRoutine(GameClockManager.Instance.GetTimeSpanned);
+
+                availableRoutines.Remove(selectedRoutine);
+            }
+        }  
 
         npc.UpdateNodePath();
 

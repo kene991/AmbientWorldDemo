@@ -17,6 +17,7 @@ public class NPC_UseInteractionActionState : NPCBaseState
 
     public override void EnterState(NPCStateMachine state)
     {
+        state.Interaction.currentInteractionState = InteractionState.Using;
         _interactionAction = state.Interaction.currentInteractionObject;
         _interactionSlot = state.Interaction.CurrentSlot;
 
@@ -42,7 +43,8 @@ public class NPC_UseInteractionActionState : NPCBaseState
 
     public override void UpdateState(NPCStateMachine state)
     {
-        if (!state.Routine.IsInFreeTime && _timerActive)
+        // if npcs get their routine while interacting with an interaction action
+        if (state.Interaction.currentInteractionState == InteractionState.Aborting && _timerActive)
         {
             ExitInteractionToState(state.idleState);
         }
@@ -66,11 +68,13 @@ public class NPC_UseInteractionActionState : NPCBaseState
     {
         _npc.StartCoroutine(_npc.RunCoroutineBeforeNextState(InteractionExitCoroutine(_npc), nextState));
     }
+
     private IEnumerator InteractionIntializeCoroutine(NPCStateMachine state)
     {
+        state.Interaction.currentInteractionState = InteractionState.Using;
+
         // intializing 
         state.StopNPC(false);
-        state.Obstacle.enabled = true;
         state.OrientToPosition(_interactionSlot.interactionMarker);
         state.Interaction.isAtInteractionMarker = true;
 
@@ -85,12 +89,16 @@ public class NPC_UseInteractionActionState : NPCBaseState
         //can call any interaction state
         _interactionAction.OnInteractionStart(state.Interaction);
 
-        _interactionTimer = _interactionAction.interactionDuration;
+        _interactionTimer = _interactionAction.interactionDurationTime;
         _timerActive = true;
     }
     private IEnumerator InteractionExitCoroutine(NPCStateMachine state)
     {
+        if (state.Interaction.currentInteractionState != InteractionState.Aborting)
+            state.Interaction.currentInteractionState = InteractionState.Exiting;
+
         // Stop the interaction timer
+        _interactionTimer = 0;
         _timerActive = false;
 
         // Stop any interaction steup
@@ -112,6 +120,7 @@ public class NPC_UseInteractionActionState : NPCBaseState
         if (_interactionAction != null)
         {
            _interactionAction.OnInteractionEnd(state.Interaction);
+            state.Interaction.currentInteractionState = InteractionState.None;
         }
     }
 

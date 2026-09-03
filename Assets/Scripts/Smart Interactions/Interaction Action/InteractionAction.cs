@@ -5,13 +5,13 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 
-[RequireComponent(typeof(SphereCollider))]
+[RequireComponent(typeof(Collider))]
 public abstract class InteractionAction : MonoBehaviour
 {
     [System.Serializable]
     public class InteractionSlot
     {
-        [HideInInspector] public NPCInteraction occupant;
+        [HideInInspector] public NPCInteractionAction occupant;
         public string roleName;
         public Transform interactionMarker;
         public AnimationType interactionAnimation;
@@ -31,7 +31,13 @@ public abstract class InteractionAction : MonoBehaviour
 
     [Header("Interaction Settings")]
     [SerializeField] protected string _interactionTag;
-    public float interactionDuration;
+
+    [Header("Interaction Duration")]
+    public float interactionDurationTime;
+
+    [Header("Interaction Duration Settings")]
+    public float interactionDurationMin;
+    public float interactionDurationMax;
     public float postInteractionWaitTime;
 
     [Header("Actor Settings")]
@@ -43,12 +49,12 @@ public abstract class InteractionAction : MonoBehaviour
     public string InteractionTag => _interactionTag;
     public string DisplayName => _displayName;
 
-    public abstract void OnInteractionStart(NPCInteraction npc);
-    public abstract void OnInteractionEnd(NPCInteraction npc);
+    public abstract void OnInteractionStart(NPCInteractionAction npc);
+    public abstract void OnInteractionEnd(NPCInteractionAction npc);
 
 
     // basically conditions (world and npc influenced conditions for the interaction object to be interactable)
-    public virtual bool CanInteract(NPCInteraction npc)
+    public virtual bool CanInteract(NPCInteractionAction npc)
     {
         bool requiredTagFound = false;
 
@@ -81,7 +87,7 @@ public abstract class InteractionAction : MonoBehaviour
     }
 
     // assigns a role and slot for the npc that enters the slot
-    public virtual bool ReserveSlot(NPCInteraction npc, out InteractionSlot slot)
+    public virtual bool ReserveSlot(NPCInteractionAction npc, out InteractionSlot slot)
     {
         slot = GetFreeSlot();
 
@@ -95,7 +101,7 @@ public abstract class InteractionAction : MonoBehaviour
     }
 
     // release the slot for the role designed for the slot
-    public virtual void ReleaseSlot(NPCInteraction npc, InteractionSlot slot)
+    public virtual void ReleaseSlot(NPCInteractionAction npc, InteractionSlot slot)
     {
         slot.occupant = null;
 
@@ -105,7 +111,7 @@ public abstract class InteractionAction : MonoBehaviour
         npc.CurrentSlot = null;
         npc.currentInteractionObject = null;
 
-
+        npc.GetNPCStateMachine().ResumeNPC();
         //checking if npc has no block in there schedule as time is updated via interval
         if (npc.GetNPCRoutine().IsInFreeTime)
             npc.GetNPCStateMachine().UpdateNodePath();
@@ -114,27 +120,33 @@ public abstract class InteractionAction : MonoBehaviour
     // used to debug slot points, can be overriden in other derived slots
     public virtual void InteractionDebugger()
     {
-        if (interactionRoles.Length > 0)
+        if (interactionRoles == null || interactionRoles.Length == 0)
+            return;
+
+        foreach (var slot in interactionRoles)
         {
-            foreach (var slot in interactionRoles)
-            {
-                if (slot.interactionMarker == null)
-                    continue;
+            if (slot.interactionMarker == null)
+                continue;
 
-                if (slot.occupant)
-                    Gizmos.color = Color.red;
-                else
-                    Gizmos.color = interactionMarkerColor;
+            if (slot.occupant)
+                Gizmos.color = Color.red;
+            else
+                Gizmos.color = interactionMarkerColor;
 
-                if (slot.roleName != string.Empty)
-                    slot.interactionMarker.gameObject.name = slot.roleName;
+            if (slot.roleName != string.Empty)
+                slot.interactionMarker.gameObject.name = slot.roleName;
 
-                Gizmos.DrawSphere(slot.interactionMarker.position, 0.3f);
+            Gizmos.DrawSphere(slot.interactionMarker.position, 0.3f);
 
-                GUI.color = Color.white;
-                Handles.Label(slot.interactionMarker.transform.position + Vector3.up * 0.5f, slot.interactionMarker.name);
-            }
+            GUI.color = Color.white;
+            Handles.Label(slot.interactionMarker.transform.position + Vector3.up * 0.5f, slot.interactionMarker.name);
         }
+
+    }
+
+    public float SetInteractionDurationTime()
+    {
+        return Mathf.Round(Random.Range(interactionDurationMin, interactionDurationMax));
     }
 
     private void OnDrawGizmos()

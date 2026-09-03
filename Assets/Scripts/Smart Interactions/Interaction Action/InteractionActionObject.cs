@@ -17,12 +17,12 @@ public class InteractionActionObject : InteractionAction
     [Header("Object Settings")]
     public ObjectAction actionObjectRole;
 
-    public override void OnInteractionStart(NPCInteraction npc)
+    public override void OnInteractionStart(NPCInteractionAction npc)
     {
         StartObjectInteraction();
     }
 
-    public override void OnInteractionEnd(NPCInteraction npc)
+    public override void OnInteractionEnd(NPCInteractionAction npc)
     {
         EndObjectInteraction();
     }
@@ -35,7 +35,7 @@ public class InteractionActionObject : InteractionAction
         return null;
     }
 
-    public override bool ReserveSlot(NPCInteraction npc, out InteractionSlot slot)
+    public override bool ReserveSlot(NPCInteractionAction npc, out InteractionSlot slot)
     {
         slot = GetFreeSlot();
 
@@ -48,7 +48,7 @@ public class InteractionActionObject : InteractionAction
         return true;
     }
 
-    public override void ReleaseSlot(NPCInteraction npc, InteractionSlot slot)
+    public override void ReleaseSlot(NPCInteractionAction npc, InteractionSlot slot)
     {
         base.ReleaseSlot(npc, slot);
     }
@@ -76,7 +76,7 @@ public class InteractionActionObject : InteractionAction
         ReleaseSlot(actionObjectRole.slot.occupant, actionObjectRole.slot);
     }
 
-    private void AttachObjectToBone(ObjectAction actionObject, NPCInteraction npc)
+    private void AttachObjectToBone(ObjectAction actionObject, NPCInteractionAction npc)
     {
         Transform bone = npc.GetBone(actionObject.occupantSocketAttachment);
 

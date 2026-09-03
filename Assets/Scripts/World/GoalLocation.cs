@@ -3,6 +3,7 @@ using System;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
 
 public class GoalLocation : MonoBehaviour
 {
@@ -19,16 +20,22 @@ public class GoalLocation : MonoBehaviour
     [Header("Animations To Play At Location")]
     public AnimationType[] clipsAtLocation;
 
+    [Header("Goal Events")]
+    public UnityEvent OnGoalEnter;
+    public UnityEvent OnGoalExit;
+
     public void OnNPCEnter(NPCStateMachine npc)
     {
         npc.NPCModel.SetActive(activeAtEntryPoint);
-        npc.StopNPC(activeAtEntryPoint);
-
         // npcs enter buildings and houses, no need to further the logic!
         if (!npc.NPCModel.activeSelf)
         {
             return;
         }
+
+        npc.StopNPC(false);
+
+        OnGoalEnter.Invoke();
     }
 
     public void OnNPCExit(NPCStateMachine npc)
@@ -41,6 +48,8 @@ public class GoalLocation : MonoBehaviour
         //refreshing npc
         if (isArea)
             npc.UpdateNodePath();
+
+        OnGoalExit.Invoke();
     }
 
     public AnimationClip PlayAnimationAtLocation()

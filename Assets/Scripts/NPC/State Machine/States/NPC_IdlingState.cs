@@ -73,10 +73,11 @@ public class NPC_IdlingState : NPCBaseState
         {
             _npc.currentPathNode = null;
             routine.IsInTaskLocation = true;
+            _npc.OrientToPosition(routine.currentTaskLocation.entryPoint);
             routine.currentTaskLocation.OnNPCEnter(_npc);
 
             // can I go a random point in this area
-            if (routine.currentTaskLocation.isArea)
+            if (routine.currentTaskLocation.isArea || routine.currentTaskLocation.activeAtEntryPoint)
             {
                 _npc.ReplaceAnimationClip(_npc.Routine.currentTaskLocation.PlayAnimationAtLocation(), "_Routine");
                 _npc.Animator.SetTrigger("SetRoutine");

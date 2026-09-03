@@ -383,7 +383,7 @@ MonoBehaviour:
   IsInTaskLocation: 0
   currentTaskLocation: {fileID: 0}
   isInFreeTime: 0
-  routineSchedule: {fileID: 11400000, guid: 1cf0c9aa1746dec49ab9f28687256e0c, type: 2}
+  routineSchedule: {fileID: 0}
   currentRoutineBlock:
     blockName: 
     startHour: 0
@@ -398,16 +398,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 490084261460884511}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 38e451e4b4c75154a82cb6055e962465, type: 3}
+  m_Script: {fileID: 11500000, guid: 8eda81b48b4136346b4e8e16682632c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPCInteraction
   interactableTags:
-  - sports car
-  - singer
-  - chair
+  - bench
+  - hot dog stand
   interactionCooldownTime: 0
   isAtInteractionMarker: 0
-  canInteract: 1
+  canInteract: 0
+  currentInteractionState: 0
   currentInteractionObject: {fileID: 0}
   currentSlot:
     occupant: {fileID: 0}

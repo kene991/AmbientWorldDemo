@@ -23,8 +23,8 @@ public class NPCStateMachine : MonoBehaviour
 
     private NPCRoutine routine;
     public NPCRoutine Routine { get { return routine; } }
-    private NPCInteraction interaction;
-    public NPCInteraction Interaction { get { return interaction; } }
+    private NPCInteractionAction interaction;
+    public NPCInteractionAction Interaction { get { return interaction; } }
 
     [Header("NPC Object Ref")]
     [SerializeField] private GameObject npcModel;
@@ -42,7 +42,7 @@ public class NPCStateMachine : MonoBehaviour
         _obstacle = GetComponent<NavMeshObstacle>();
 
         routine = GetComponent<NPCRoutine>();
-        interaction = GetComponent<NPCInteraction>();
+        interaction = GetComponent<NPCInteractionAction>();
     }
 
     private void Start()
@@ -97,22 +97,25 @@ public class NPCStateMachine : MonoBehaviour
 
 
     #region Nav Mesh Calls
-    public void StopNPC(bool includeNavMeshComponent = true)
+    public void StopNPC(bool includeNavMeshComponent = true, bool includeObstacle = true)
     {
         Agent.enabled = includeNavMeshComponent;
 
         if (includeNavMeshComponent == true)
             Agent.isStopped = true;
+
+        Obstacle.enabled = includeObstacle;
     }
 
-    public void ResumeNPC()
+    public void ResumeNPC(bool includeObstacle = false)
     {
+        Obstacle.enabled = includeObstacle;
+
         if (!Agent.enabled)
         {
             Agent.enabled = true;
             Agent.Warp(Agent.transform.position);
         }
-
 
         Agent.isStopped = false;
     }

@@ -7,48 +7,37 @@ using UnityEngine;
 
 public class InteractionActionZone : InteractionAction
 {
-    [Header("Zone Condition Settings")]
-    public bool ShouldAllBeOccupied; //is all slots occupied
 
-    public override void OnInteractionStart(NPCInteraction npc)
+    private void Start()
+    {
+        interactionDurationTime = SetInteractionDurationTime();
+    }
+
+    public override void OnInteractionStart(NPCInteractionAction npc)
     {
         CanPerform(npc);
     }
 
-    public override void OnInteractionEnd(NPCInteraction npc)
+    public override void OnInteractionEnd(NPCInteractionAction npc)
     {
         EndInteractionCheck(npc);
+
+        interactionDurationTime = SetInteractionDurationTime();
     }
 
     // checks if the interaction required all slots fill or not before firing
-    public void CanPerform(NPCInteraction npc)
+    public void CanPerform(NPCInteractionAction npc)
     {
-        //should all agents be at the marker before executing?
-        if (ShouldAllBeOccupied)
-        {
-            if (interactionRoles.All(slot => slot.occupant != null && slot.occupant.isAtInteractionMarker))
-            {
-                StartGroupInteraction();
-            }
-        }
-        else
-        {
-            StartSingleInteraction(npc);
-        }
+
+        StartSingleInteraction(npc);
     }
 
-    public void EndInteractionCheck(NPCInteraction npc)
+    public void EndInteractionCheck(NPCInteractionAction npc)
     {
-        if (ShouldAllBeOccupied)
-        {
-            EndGroupInteraction(npc);
-            return;
-        }
-
         EndSingleInteraction(npc);
     }
 
-    private void StartSingleInteraction(NPCInteraction npc)
+    private void StartSingleInteraction(NPCInteractionAction npc)
     {
         if (!npc.isAtInteractionMarker)
             return;
@@ -60,37 +49,11 @@ public class InteractionActionZone : InteractionAction
         npc.CurrentSlot.OnInteractionStart.Invoke();
     }
 
-    private void EndSingleInteraction(NPCInteraction npc)
+    private void EndSingleInteraction(NPCInteractionAction npc)
     {
-        npc.GetNPCStateMachine().Obstacle.enabled = false;
-        npc.GetNPCStateMachine().ResumeNPC();
         npc.interactionCooldownTime += npc.currentInteractionObject.postInteractionWaitTime;
 
         npc.CurrentSlot.OnInteractionEnd.Invoke();
         npc.currentInteractionObject.ReleaseSlot(npc, npc.CurrentSlot);
-    }
-
-    private void StartGroupInteraction()
-    {
-        foreach (var slot in interactionRoles)
-        {
-            if (slot.occupant == null)
-                continue;
-            if (!slot.occupant.isAtInteractionMarker)
-                continue;
-
-            StartSingleInteraction(slot.occupant);
-        }
-    }
-
-    private void EndGroupInteraction(NPCInteraction npc)
-    {
-        foreach (var slot in interactionRoles)
-        {
-            if (slot.occupant == null)
-                continue;
-
-            EndSingleInteraction(slot.occupant);
-        }
     }
 }

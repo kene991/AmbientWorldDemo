@@ -82,6 +82,11 @@ public class NPCRoutine : MonoBehaviour
 
     private void EnterFreeTime()
     {
+        if (NPCStateMachine.Interaction && NPCStateMachine.Interaction.currentInteractionObject)
+        {
+            NPCStateMachine.Interaction.currentInteractionState = InteractionState.Aborting;
+        }
+
         //exit routine task location if npc has one
         if (currentTaskLocation)
         {
